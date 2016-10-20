@@ -31,11 +31,19 @@
                              HorizontalOptions="FillAndExpand"
                              Padding="5,5,5,5"
                              VerticalOptions="CenterAndExpand">
-                    <Label FontSize="18"
-                           HorizontalTextAlignment="Center"
+                    <Label HorizontalTextAlignment="Center"
                            Text="{Binding Name}"
                            TextColor="White"
-                           VerticalTextAlignment="Center" />
+                           VerticalTextAlignment="Center">
+                        <Label.FontSize>
+                            <OnPlatform x:TypeArguments="x:Double"
+                                        iOS="18"
+                                        Android="18"
+                                        WinPhone="12" />
+                        </Label.FontSize>
+
+                    </Label>
+                      
                 </ContentView>
             </Grid.Children>
         </Grid>
