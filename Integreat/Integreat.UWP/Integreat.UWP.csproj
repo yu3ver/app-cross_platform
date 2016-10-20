@@ -92,6 +92,7 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Search.png" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
@@ -133,6 +134,7 @@
     <Content Include="Assets\Wide310x150Logo.scale-100.jpg" />
     <Content Include="Assets\Wide310x150Logo.scale-200.jpg" />
     <Content Include="Assets\Wide310x150Logo.scale-400.jpg" />
+    <Content Include="Globe.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
