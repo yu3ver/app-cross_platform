@@ -92,6 +92,8 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="calendar159.png" />
+    <Content Include="home150.png" />
     <Content Include="Search.png" />
     <None Include="project.json" />
   </ItemGroup>
