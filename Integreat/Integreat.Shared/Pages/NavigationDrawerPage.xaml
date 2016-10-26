@@ -38,14 +38,27 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30" />
                         <RowDefinition Height="90" />
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition>
+                            <RowDefinition.Height>
+                                <OnPlatform x:TypeArguments="GridLength"
+                                            iOS="Auto"
+                                            Android="Auto"
+                                            WinPhone="30" />
+                            </RowDefinition.Height>
+                        </RowDefinition>
                     </Grid.RowDefinitions>
                     <Image Grid.RowSpan="3"
                            Grid.ColumnSpan="3"
-                           Aspect="Fill"
                            BackgroundColor="#03A9F4"
                            Source="{Binding Thumbnail,
-                                            Converter={StaticResource ImageConverter}}" />
+                                            Converter={StaticResource ImageConverter}}" >
+                        <Image.Aspect>
+                            <OnPlatform x:TypeArguments="Aspect"
+                                        iOS="Fill"
+                                        Android="Fill"
+                                        WinPhone="AspectFill" />
+                        </Image.Aspect>    
+                    </Image>
                     <Label Grid.Row="2"
                            Grid.ColumnSpan="3"
                            BackgroundColor="#96000000"
