@@ -32,7 +32,14 @@
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="10" />
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition>
+                            <ColumnDefinition.Width>
+                                <OnPlatform x:TypeArguments="GridLength"
+                                            iOS="*"
+                                            Android="*"
+                                            WinPhone="300" />
+                            </ColumnDefinition.Width>    
+                        </ColumnDefinition>
                         <ColumnDefinition Width="10" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
