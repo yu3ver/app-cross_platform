@@ -15,7 +15,7 @@
                 <OnPlatform x:TypeArguments="Thickness"
                             iOS="0,0,0,0"
                             Android="0,0,0,0"
-                            WinPhone="0,0,0,25" />
+                            WinPhone="0,0,0,5" />
             </StackLayout.Padding>
             <StackLayout Padding="5,5,5,5">
                 <Entry x:Name="SearchEntry"

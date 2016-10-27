@@ -2,50 +2,67 @@
 <ContentView x:Class="Integreat.Shared.Views.LocationView"
              xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:converters="clr-namespace:Integreat.Shared.Converters"
-             HeightRequest="150"
-             MinimumHeightRequest="150">
-    <ContentView.Resources>
-        <ResourceDictionary>
-            <converters:UriImageSourceConverter x:Key="ImageConverter" />
-        </ResourceDictionary>
-    </ContentView.Resources>
-    <ContentView.Content>
-        <Grid Padding="5,5,5,5">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="90" />
-                <RowDefinition Height="70" />
-            </Grid.RowDefinitions>
-            <Grid.Children>
-                <Image Grid.Row="0"
-                       Grid.RowSpan="2"
-                       HeightRequest="150"
-                       HorizontalOptions="CenterAndExpand"
-                       MinimumHeightRequest="150"
-                       Source="{Binding CityImage,
+             xmlns:converters="clr-namespace:Integreat.Shared.Converters">
+  <ContentView.HeightRequest>
+    <OnPlatform x:TypeArguments="x:Double"
+                Android="150"
+                iOS="150"
+                WinPhone="165" />
+  </ContentView.HeightRequest>
+  <ContentView.MinimumHeightRequest>
+    <OnPlatform x:TypeArguments="x:Double"
+                Android="150"
+                iOS="150"
+                WinPhone="165" />
+  </ContentView.MinimumHeightRequest>
+  <ContentView.Resources>
+    <ResourceDictionary>
+      <converters:UriImageSourceConverter x:Key="ImageConverter" />
+    </ResourceDictionary>
+  </ContentView.Resources>
+  <ContentView.Content>
+    <Grid Padding="5,5,5,5">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="90" />
+        <RowDefinition>
+          <RowDefinition.Height>
+            <OnPlatform x:TypeArguments="GridLength"
+                        iOS="70"
+                        Android="70"
+                        WinPhone="100" />
+          </RowDefinition.Height>  
+        </RowDefinition>
+      </Grid.RowDefinitions>
+      <Grid.Children>
+        <Image Grid.Row="0"
+               Grid.RowSpan="2"
+               HeightRequest="150"
+               HorizontalOptions="CenterAndExpand"
+               MinimumHeightRequest="150"
+               Source="{Binding CityImage,
                                         Converter={StaticResource ImageConverter}}"
-                       VerticalOptions="FillAndExpand" />
+               VerticalOptions="FillAndExpand" />
 
-                <ContentView Grid.Row="1"
-                             BackgroundColor="#71000000"
-                             HorizontalOptions="FillAndExpand"
-                             Padding="5,5,5,5"
-                             VerticalOptions="CenterAndExpand">
-                    <Label HorizontalTextAlignment="Center"
-                           Text="{Binding Name}"
-                           TextColor="White"
-                           VerticalTextAlignment="Center">
-                        <Label.FontSize>
-                            <OnPlatform x:TypeArguments="x:Double"
-                                        iOS="18"
-                                        Android="18"
-                                        WinPhone="12" />
-                        </Label.FontSize>
+        <ContentView Grid.Row="1"
+                     BackgroundColor="#71000000"
+                     HorizontalOptions="FillAndExpand"
+                     Padding="5,5,5,5"
+                     VerticalOptions="CenterAndExpand">
+          <Label HorizontalTextAlignment="Center"
+                 Text="{Binding Name}"
+                 TextColor="White"
+                 VerticalTextAlignment="Center">
+            <Label.FontSize>
+              <OnPlatform x:TypeArguments="x:Double"
+                          iOS="18"
+                          Android="18"
+                          WinPhone="14" />
+            </Label.FontSize>
 
-                    </Label>
-                      
-                </ContentView>
-            </Grid.Children>
-        </Grid>
-    </ContentView.Content>
+          </Label>
+
+        </ContentView>
+      </Grid.Children>
+    </Grid>
+  </ContentView.Content>
 </ContentView>
