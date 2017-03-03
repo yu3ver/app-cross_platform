@@ -71,7 +71,7 @@ namespace Integreat.Shared.Services.Persistence
 	    }
 
 	    public Task Insert<T>(T element, bool recursive = true)
-        {
+	    {
             return Connection.InsertOrReplaceWithChildrenAsync(element, recursive);
         }
 
