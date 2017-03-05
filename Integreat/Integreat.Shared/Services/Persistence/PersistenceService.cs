@@ -2,30 +2,29 @@
 using System.Collections.ObjectModel;
 using Integreat.Shared.Models;
 using Integreat.Utilities;
-using SQLite.Net;
-using SQLite.Net.Async;
-using SQLite.Net.Interop;
+using SQLite;
 using SQLiteNetExtensionsAsync.Extensions;
+using SQLiteOpenFlags = SQLite.SQLiteOpenFlags;
 
 namespace Integreat.Shared.Services.Persistence
 {
 	// http://code.tutsplus.com/tutorials/an-introduction-to-xamarinforms-and-sqlite--cms-23020
 	public partial class PersistenceService
 	{
-	    public PersistenceService(ISQLitePlatform platform, string databaseFilePath)
+	    public PersistenceService(string databaseFilePath)
         {
 	        var connectionString = new SQLiteConnectionString(databaseFilePath, false);
-	        _connLock = new SQLiteConnectionWithLock(platform, connectionString);
+	        _connLock = new SQLiteConnectionWithLock(connectionString, SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create);
         }
 
-        public PersistenceService (ISQLitePlatform platform)
+        public PersistenceService ()
         {
             var connectionString = new SQLiteConnectionString(Constants.DatabaseFilePath, false);
-            _connLock = new SQLiteConnectionWithLock(platform, connectionString);
+            _connLock = new SQLiteConnectionWithLock(connectionString, SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create);
         }
         
 	    private readonly SQLiteConnectionWithLock _connLock;
-	    public SQLiteAsyncConnection Connection => new SQLiteAsyncConnection(SqliteConnectionFunc);
+	    public SQLiteAsyncConnection Connection => new SQLiteAsyncConnection(SqliteConnectionFunc().DatabasePath);
 
 	    private SQLiteConnectionWithLock SqliteConnectionFunc()
 	    {
@@ -85,8 +84,7 @@ namespace Integreat.Shared.Services.Persistence
             return Connection.InsertOrReplaceAllWithChildrenAsync(elements, recursive);
         }
 
-	    public Task<T> Get<T> (object key, bool recursive=true) where T : class
-	    {
+	    public Task<T> Get<T> (object key, bool recursive=true) where T : new() {
 	        return Connection.FindWithChildrenAsync<T>(key, recursive);
 	    }
        

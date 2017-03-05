@@ -10,7 +10,7 @@ namespace Integreat.Utilities
         {
             get
             {
-                var sqliteFilename = "_integreat.db3";
+                var sqliteFilename = "_integreat_13.db3";
 #if NETFX_CORE
 				var path = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, sqliteFilename);
 #else

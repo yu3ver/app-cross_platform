@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Fusillade;
 using Integreat.Shared.Models;
@@ -33,6 +35,7 @@ namespace Integreat.Shared.Services.Loader
             {
                 return await _persistenceService.GetLocations().DefaultIfFaulted(new List<Location>());
             }
+            
 
             var networkLocations = CrossConnectivity.Current.IsConnected
                 ? await Policy

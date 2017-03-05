@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
-using SQLite.Net.Attributes;
 using SQLiteNetExtensions.Attributes;
 using Integreat.Shared.Utilities;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using SQLite;
 
 namespace Integreat.Shared.Models
 {
@@ -74,7 +74,7 @@ namespace Integreat.Shared.Models
 		{
 		}
 
-		public Page (string primaryKey, int id, string title, string type, string status, DateTime modified, string excerpt, string content,
+		protected Page (string primaryKey, int id, string title, string type, string status, DateTime modified, string excerpt, string content,
 		                  string parentId, int order, string thumbnail, Author author, bool? autoTranslated,
 		                  List<AvailableLanguage> availableLanguages)
 		{

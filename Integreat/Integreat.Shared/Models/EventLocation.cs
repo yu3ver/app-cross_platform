@@ -1,6 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
-using SQLite.Net.Attributes;
+using SQLite;
+using SQLite;
 using SQLiteNetExtensions.Attributes;
 
 namespace Integreat.Shared.Models

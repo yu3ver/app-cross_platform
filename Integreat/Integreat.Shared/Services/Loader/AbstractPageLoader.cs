@@ -16,7 +16,7 @@ using Polly;
 
 namespace Integreat.Shared.Services.Loader
 {
-    public abstract class AbstractPageLoader<T> where T : Page
+    public abstract class AbstractPageLoader<T> where T : Page, new()
     {
         private const int NoReloadTimeout = 4;
         protected INetworkService NetworkService { get; }

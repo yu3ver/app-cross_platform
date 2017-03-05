@@ -4,7 +4,6 @@ using Foundation;
 using Integreat.Shared;
 using UIKit;
 using Autofac;
-using SQLite.Net.Platform.XamarinIOS;
 using Integreat.Shared.Services.Persistence;
 using Integreat.Shared.Services.Tracking;
 using Xamarin.Forms;
@@ -47,7 +46,7 @@ namespace Integreat.iOS
 
         private PersistenceService CreatePersistenceService()
         {
-            var persistence = new PersistenceService(new SQLitePlatformIOS());
+            var persistence = new PersistenceService();
             persistence.Init();
             return persistence;
         }

@@ -51,19 +51,36 @@ namespace Integreat
         }
 
         // http://stackoverflow.com/questions/34197745/continuewith-and-taskcancellation-how-to-return-default-values-if-task-fails
-        public static async Task<T> DefaultIfFaulted<T>(this Task<T> @this, T defaultValue = default(T))
+        public static async Task<T> DefaultIfFaulted<T>(this Task<T> @this, T defaultValue = default(T)) 
         {
             // Await completion regardless of resulting Status (alternatively you can use try/catch).
-            await @this
-                .ContinueWith(_ => { }, TaskContinuationOptions.ExecuteSynchronously)
-                .ConfigureAwait(false);
+            const int timeout = 1000;
+            try
+            {
+                if (await Task.WhenAny(@this, Task.Delay(timeout)) != @this) {
+                    // timeout logic
+                    Debug.WriteLine("Timeout of Task: " + @this);
+                    throw new Exception("Time out of task");
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Task failed" + e.Message);
+            }
 
-            if (@this.Status == TaskStatus.Faulted)
+          
+
+            /*await @this
+                .ContinueWith(_ => { }, TaskContinuationOptions.ExecuteSynchronously)
+                .ConfigureAwait(false);*/
+
+             if (@this.Status != TaskStatus.RanToCompletion)
             {
                 Debug.WriteLine(@this.Status + " " + @this.Exception.InnerException.Message);
                 return defaultValue;
             }
-            var result = await @this.ConfigureAwait(false);
+
+            var result = @this.Result;
             // if task ended successfully but still returned null, return a default value (if set)
             return result.IsDefault() ? defaultValue : result;
         }

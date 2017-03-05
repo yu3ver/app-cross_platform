@@ -16,7 +16,6 @@ using Autofac;
 using Integreat.Shared;
 using Integreat.Shared.Services.Persistence;
 using Integreat.Shared.Services.Tracking;
-using SQLite.Net.Platform.WinRT;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -46,7 +45,7 @@ namespace Integreat.UWP
 
         private PersistenceService CreatePersistenceService()
         {
-            var persistence = new PersistenceService(new SQLitePlatformWinRT());
+            var persistence = new PersistenceService();
             persistence.Init();
             return persistence;
         }

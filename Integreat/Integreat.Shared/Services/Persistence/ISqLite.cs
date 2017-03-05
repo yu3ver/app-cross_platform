@@ -1,5 +1,4 @@
-﻿using SQLite.Net;
-using SQLite.Net.Async;
+﻿using SQLite;
 
 namespace Integreat.Shared.Services.Persistence
 {
