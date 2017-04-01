@@ -12,10 +12,12 @@ using DLToolkit.Forms.Controls;
 using Integreat.Shared.Models;
 using Integreat.Shared.Pages.Redesign;
 using Integreat.Shared.Pages.Redesign.Events;
+using Integreat.Shared.Pages.Redesign.General;
 using Integreat.Shared.Pages.Redesign.Main;
 using Integreat.Shared.Services.Persistence;
 using Integreat.Shared.ViewModels.Resdesign;
 using Integreat.Shared.ViewModels.Resdesign.Events;
+using Integreat.Shared.ViewModels.Resdesign.General;
 using Integreat.Shared.ViewModels.Resdesign.Main;
 
 namespace Integreat.ApplicationObject
@@ -84,11 +86,13 @@ namespace Integreat.ApplicationObject
 			// extras
 			viewFactory.Register<SprungbrettViewModel, SprungbrettPage>();
 			viewFactory.Register<Careers4RefugeesViewModel, Careers4RefugeesPage>();
+
+            // general
+            viewFactory.Register<GeneralWebViewPageViewModel, GeneralWebViewPage>();
         }
 
         private void ConfigureApplication(IComponentContext container)
         {
-            Careers4RefugeesTemp.Test();
             var viewFactory = container.Resolve<IViewFactory>();
 
             // check whether to start with MainPageViewModel or LocationsViewModel
@@ -96,8 +100,8 @@ namespace Integreat.ApplicationObject
             var locationId =  Preferences.Location();
 
             // clear language selection for testing
-            //Preferences.SetLocation(new Location() { Id = -1 });
-            //mainPage = viewFactory.Resolve<ContentContainerViewModel>();
+            // Preferences.SetLocation(new Location() { Id = -1 });
+            mainPage = viewFactory.Resolve<ContentContainerViewModel>();
             /*
             if (locationId >= 0 && !Preferences.Language(locationId).IsNullOrEmpty())
             {

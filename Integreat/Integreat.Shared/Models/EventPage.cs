@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using SQLite.Net.Attributes;
 using Newtonsoft.Json;
-using SQLite;
 using SQLiteNetExtensions.Attributes;
 
 namespace Integreat.Shared.Models
@@ -26,7 +28,11 @@ namespace Integreat.Shared.Models
 		//[TextBlob("AddressesBlobbed")]
         public List<EventCategory> Categories{ get; set; }
 
-		public EventPage ()
+
+	    public string EventDescription => new DateTime(Event.StartTime).ToString("dd.MM.yyyy HH:mm") + " - " + Description;
+
+
+        public EventPage ()
 		{
 		}
 

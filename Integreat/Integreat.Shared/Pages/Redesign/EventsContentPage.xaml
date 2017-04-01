@@ -13,11 +13,12 @@
         <ListView x:Name="listView"
                   SeparatorVisibility="None"
                   HasUnevenRows="True"
-                  IsPullToRefreshEnabled="True"
+                  IsPullToRefreshEnabled="True"  
+                    RowHeight="50"
                   IsRefreshing="{Binding IsBusy,
                                          Mode=OneWay}"
                   ItemsSource="{Binding EventPages}"
-                  RefreshCommand="{Binding ForceRefreshEventPagesCommand}">
+                  RefreshCommand="{Binding RefreshCommand}">
             <ListView.Header>
                 <StackLayout Padding="20,13,20,0">
                     <!--  gear image  -->
@@ -30,13 +31,19 @@
 
                     <!--  accent line  -->
                     <BoxView BackgroundColor="{StaticResource accentColor}" HeightRequest="1" />
+
+
+                    <Label
+                        IsVisible="{Binding HasNoResults}"
+                        Text="Keine Ergebnisse"
+                        TextColor="{StaticResource textColor}" />
                 </StackLayout>
             </ListView.Header>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ImageCell Command="{Binding OnTapCommand}"
                                CommandParameter="{Binding}"
-                               Detail="{Binding Description}"
+                               Detail="{Binding Page.EventDescription}"
                                ImageSource="{Binding Thumbnail,
                                                      Converter={StaticResource ImageConverter}}"
                                Text="{Binding Title}"
