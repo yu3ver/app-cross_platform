@@ -15,7 +15,8 @@
     "SQLiteNetExtensions.Async": "2.0.0-alpha2",
     "Xam.Plugin.Connectivity": "2.2.12",
     "Xam.Plugins.Settings": "2.1.0",
-    "Xamarin.Forms": "2.3.4.192-pre2"
+    "Xamarin.Build.Download": "0.4.3",
+    "Xamarin.Forms": "2.3.4.221-pre6"
   },
   "frameworks": {
     "uap10.0": {}
