@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Integreat.Shared.Models;
 using Plugin.Connectivity.Abstractions;
 using Plugin.Settings;
@@ -23,6 +24,25 @@ namespace Integreat.Shared.Utilities
 
         private const string LastLocationKey = "last_location";
         private const string LastLocationUpdate = "last_location_update";
+        private const string FirebaseTokenListKey = "firebase_tokens";
+
+        /// <summary>
+        /// Sets the firebase tokens.
+        /// </summary>
+        /// <param name="tokenList">The token list.</param>
+        public static void SetFirebaseTokens(List<string> tokenList)
+        {
+            AppSettings.AddOrUpdateValue(FirebaseTokenListKey, tokenList);
+        }
+
+        /// <summary>
+        /// Gets the firebase tokens.
+        /// </summary>
+        /// <returns>List of tokens or null if there were never any tokens set.</returns>
+        public static List<string> GetFirebaseTokens()
+        {
+            return AppSettings.GetValueOrDefault<List<string>>(FirebaseTokenListKey);
+        }
 
         public static void RemoveLocation()
         {

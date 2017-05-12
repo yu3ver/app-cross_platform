@@ -10,10 +10,12 @@ using Integreat.Shared.Pages.Redesign;
 using Integreat.Shared.Pages.Redesign.Events;
 using Integreat.Shared.Pages.Redesign.General;
 using Integreat.Shared.Pages.Redesign.Main;
+using Integreat.Shared.Pages.Redesign.Settings;
 using Integreat.Shared.ViewModels.Resdesign;
 using Integreat.Shared.ViewModels.Resdesign.Events;
 using Integreat.Shared.ViewModels.Resdesign.General;
 using Integreat.Shared.ViewModels.Resdesign.Main;
+using Integreat.Shared.ViewModels.Resdesign.Settings;
 using Integreat.Utilities;
 using ModernHttpClient;
 using Newtonsoft.Json;
@@ -85,6 +87,10 @@ namespace Integreat.Shared.ApplicationObjects
 			builder.RegisterType<Careers4RefugeesViewModel>();
 			builder.RegisterType<SprungbrettPage>();
 			builder.RegisterType<SprungbrettViewModel>();
+
+            // settings
+            builder.RegisterType<FirebaseTokenPageViewModel>();
+            builder.RegisterType<FirebaseTokenPage>();
 
             // general
             builder.RegisterType<GeneralWebViewPage>();
