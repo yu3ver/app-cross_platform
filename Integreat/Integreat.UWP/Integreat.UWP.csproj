@@ -102,6 +102,7 @@
     <Content Include="location.png" />
     <Content Include="LocationBig.png" />
     <Content Include="lsradar.jpg" />
+    <AndroidResource Include="sbi-logo.png" />
     <Content Include="sbi_integreat_quadratisch_farbe.jpg" />
     <Content Include="search.png" />
     <Content Include="serloabc.jpg" />

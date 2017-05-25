@@ -279,6 +279,7 @@
     <AndroidResource Include="Resources\Drawable\careers4refugees_de_icon.jpg" />
     <AndroidResource Include="Resources\Drawable\serloabc.jpg" />
     <AndroidResource Include="Resources\Drawable\lsradar.jpg" />
+    <AndroidResource Include="Resources\Drawable\sbi-logo.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable-mdpi\" />
