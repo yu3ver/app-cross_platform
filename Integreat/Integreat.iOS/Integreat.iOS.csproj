@@ -435,12 +435,6 @@
     <BundleResource Include="Resources\careers4refugees_de_icon.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\localization\localization.csproj">
-      <Project>{67f9d3a8-f71e-4428-913f-c37ae82cdb24}</Project>
-      <Name>localization</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BundleResource Include="Resources\serloabc.jpg" />
   </ItemGroup>
   <ItemGroup>
@@ -448,6 +442,15 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\sbi-logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\c4r-logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\localization\localization.csproj">
+      <Project>{67f9d3a8-f71e-4428-913f-c37ae82cdb24}</Project>
+      <Name>localization</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="..\Integreat.Shared\Integreat.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

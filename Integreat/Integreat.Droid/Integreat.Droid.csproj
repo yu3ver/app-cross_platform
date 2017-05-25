@@ -280,6 +280,7 @@
     <AndroidResource Include="Resources\Drawable\serloabc.jpg" />
     <AndroidResource Include="Resources\Drawable\lsradar.jpg" />
     <AndroidResource Include="Resources\Drawable\sbi-logo.png" />
+    <AndroidResource Include="Resources\Drawable\c4r-logo.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable-mdpi\" />

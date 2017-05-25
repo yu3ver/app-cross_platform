@@ -92,21 +92,22 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="arrow.png" />
-    <Content Include="CalendarBig.png" />
-    <Content Include="careers4refugees_de_icon.jpg" />
-    <Content Include="GearBig.png" />
-    <Content Include="GlobeBig.png" />
-    <Content Include="Icon.png" />
-    <Content Include="IntegreatLogo.png" />
-    <Content Include="location.png" />
-    <Content Include="LocationBig.png" />
-    <Content Include="lsradar.jpg" />
-    <AndroidResource Include="sbi-logo.png" />
-    <Content Include="sbi_integreat_quadratisch_farbe.jpg" />
-    <Content Include="search.png" />
-    <Content Include="serloabc.jpg" />
-    <Content Include="StarBig.png" />
+    <Content Include="Resources\arrow.png" />
+    <AndroidResource Include="Resources\c4r-logo.png" />
+    <Content Include="Resources\CalendarBig.png" />
+    <Content Include="Resources\careers4refugees_de_icon.jpg" />
+    <Content Include="Resources\GearBig.png" />
+    <Content Include="Resources\GlobeBig.png" />
+    <Content Include="Resources\Icon.png" />
+    <Content Include="Resources\IntegreatLogo.png" />
+    <Content Include="Resources\location.png" />
+    <Content Include="Resources\LocationBig.png" />
+    <Content Include="Resources\lsradar.jpg" />
+    <AndroidResource Include="Resources\sbi-logo.png" />
+    <Content Include="Resources\sbi_integreat_quadratisch_farbe.jpg" />
+    <Content Include="Resources\search.png" />
+    <Content Include="Resources\serloabc.jpg" />
+    <Content Include="Resources\StarBig.png" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
@@ -127,7 +128,7 @@
     <None Include="Integreat.UWP_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="globe.png" />
+    <Content Include="Resources\globe.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
