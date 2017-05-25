@@ -8,7 +8,10 @@ using Xamarin.Forms;
 
 namespace Integreat.Shared.Converters
 {
-	public class UriImageSourceConverter : IValueConverter
+    /// <summary>
+    /// converts a string to an uriimagesource
+    /// </summary>
+    public class UriImageSourceConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
