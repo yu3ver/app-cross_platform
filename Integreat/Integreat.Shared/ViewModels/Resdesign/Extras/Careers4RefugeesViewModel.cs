@@ -47,12 +47,17 @@ namespace Integreat.Shared {
         /// </summary>
         public string HasNoResultsLabel => AppResources.HasNoResults;
 
+        /// <summary>
+        /// The displayed header image on the page
+        /// </summary>
+        public string HeaderImage { get; set; }
         #endregion⁄
 
 
         public Careers4RefugeesViewModel(IAnalyticsService analytics, INavigator navigator, DataLoaderProvider dataLoaderProvider, Func<string, bool, GeneralWebViewPageViewModel> generalWebViewFactory )
             : base(analytics, dataLoaderProvider) {
             Title = "Extras";
+            HeaderImage = "c4cr-logo";
             _navigator = navigator;
             _generalWebViewFactory = generalWebViewFactory;
             _navigator.HideToolbar(this);
@@ -62,7 +67,10 @@ namespace Integreat.Shared {
             // wait until this resource is free
             Offers?.Clear();
             await Task.Run(() => {
-                while (IsBusy) ;
+                while (IsBusy)
+                {
+                    //empty
+                }
             });
             IsBusy = true;
             HasNoResults = false;

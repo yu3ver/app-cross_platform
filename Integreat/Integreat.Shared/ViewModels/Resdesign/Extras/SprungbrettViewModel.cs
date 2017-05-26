@@ -46,10 +46,11 @@ namespace Integreat.Shared
             set { SetProperty(ref _hasNoResults, value); }
         }
 
+        /// <summary>
+        /// The displayed header image on the page
+        /// </summary>
         public string HeaderImage { get; set; }
-
         #endregion⁄
-
 
         public SprungbrettViewModel(IAnalyticsService analytics, INavigator navigator, DataLoaderProvider dataLoaderProvider, Func<string, bool, GeneralWebViewPageViewModel> generalWebViewFactory)
             : base(analytics, dataLoaderProvider)

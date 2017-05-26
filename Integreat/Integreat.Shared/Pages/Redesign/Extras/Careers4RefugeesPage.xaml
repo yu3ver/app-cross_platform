@@ -4,7 +4,14 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:customRenderer="clr-namespace:Integreat.Shared.CustomRenderer"
-    xmlns:pages="clr-namespace:Integreat.Shared.Pages" BackgroundColor="{StaticResource backgroundColor}">
+    xmlns:pages="clr-namespace:Integreat.Shared.Pages"
+    xmlns:converters="clr-namespace:Integreat.Shared.Converters;assembly=Integreat.Droid"
+    BackgroundColor="{StaticResource backgroundColor}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:UriImageSourceConverter x:Key="ImageConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.Content>
         <ListView
             IsPullToRefreshEnabled="True"
@@ -15,8 +22,13 @@
             SeparatorVisibility="None">
             <ListView.Header>
                 <StackLayout Orientation="Vertical">
-                    <!--  select category text  -->
-                    <customRenderer:SpaceFittingLabel
+                    <Image HorizontalOptions="FillAndExpand"
+                           HeightRequest="80"
+                           Aspect="AspectFit"                           
+                           Source="{Binding HeaderImage, Converter={StaticResource ImageConverter}}"
+                           VerticalOptions="FillAndExpand"
+                           BackgroundColor="Black"/>
+                    <!--<customRenderer:SpaceFittingLabel
                         Margin="10,0"
                         FontSize="36"
                         HorizontalTextAlignment="Center"
@@ -25,7 +37,7 @@
                         TextColor="{StaticResource textColor}"
                         VerticalTextAlignment="Center">
                         <Label.FontAttributes>Bold</Label.FontAttributes>
-                    </customRenderer:SpaceFittingLabel>
+                    </customRenderer:SpaceFittingLabel>-->
 
                     <!--  accent line  -->
                     <BoxView
