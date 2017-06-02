@@ -441,10 +441,10 @@
     <BundleResource Include="Resources\lsradar.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\sbi-logo.png" />
+    <AndroidResource Include="Resources\sbi_logo.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\c4r-logo.png" />
+    <AndroidResource Include="Resources\c4r_logo.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\localization\localization.csproj">
