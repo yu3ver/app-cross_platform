@@ -112,6 +112,8 @@ namespace Integreat.Shared.ViewModels
             return true;
         }
 
+        public double FontSize => Device.GetNamedSize(NamedSize.Large, typeof(Label));
+
         #region INotifyPropertyChanged implementation
 
         public event PropertyChangedEventHandler PropertyChanged;

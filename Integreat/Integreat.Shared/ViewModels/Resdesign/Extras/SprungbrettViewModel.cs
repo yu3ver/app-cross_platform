@@ -56,7 +56,7 @@ namespace Integreat.Shared
             : base(analytics, dataLoaderProvider)
         {
             Title = "Sprungbrett";
-            HeaderImage = "sbi-logo.png";
+            HeaderImage = "sbi_logo";
             _navigator = navigator;
             _generalWebViewFactory = generalWebViewFactory;
 

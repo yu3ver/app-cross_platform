@@ -57,7 +57,7 @@ namespace Integreat.Shared {
         public Careers4RefugeesViewModel(IAnalyticsService analytics, INavigator navigator, DataLoaderProvider dataLoaderProvider, Func<string, bool, GeneralWebViewPageViewModel> generalWebViewFactory )
             : base(analytics, dataLoaderProvider) {
             Title = "Extras";
-            HeaderImage = "c4cr-logo";
+            HeaderImage = "c4r_logo";
             _navigator = navigator;
             _generalWebViewFactory = generalWebViewFactory;
             _navigator.HideToolbar(this);

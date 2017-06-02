@@ -58,8 +58,6 @@ namespace Integreat.Shared.ViewModels.Resdesign {
             Current = this;
         }
 
-        
-
         /// <summary>
         /// Loads the location from the settings and finally loads their models from the persistence service.
         /// </summary>
@@ -188,7 +186,6 @@ namespace Integreat.Shared.ViewModels.Resdesign {
                 var navPage = child as BaseContentPage;
 
                 navPage?.Refresh(metaDataChanged);
-
             }
         }
     }
