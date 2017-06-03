@@ -175,10 +175,6 @@
       <HintPath>..\..\packages\Xam.Plugins.Settings.2.1.0\lib\Xamarin.iOS10\Plugin.Settings.Abstractions.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Polly, Version=4.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Polly.4.3.0\lib\dotnet\Polly.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Refit, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\refit.3.0.0\lib\netstandard1.3\Refit.dll</HintPath>
       <Private>True</Private>
