@@ -114,7 +114,7 @@ namespace Integreat.Shared
             // try to cast the object, abort if failed
             var jobOffer = jobOfferObject as SprungbrettJobOffer;
             if (jobOffer == null) return;
-
+            jobOffer.IsVisitedImage = "Icon_Small";
             var view = _generalWebViewFactory(jobOffer.Url, false);
             view.Title = "Sprungbrett";
             // push a new general webView page, which will show the URL of the offer

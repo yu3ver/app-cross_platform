@@ -32,6 +32,7 @@ namespace Integreat.Shared.Models.Sprungbrett
         [JsonProperty("url")]
         public string Url { get; set; }
 
+        public string IsVisitedImage { get; set; } = "Icon_Transparent_Small";
         public Command OnTapCommand { get; set; }
     }
 
