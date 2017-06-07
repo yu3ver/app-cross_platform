@@ -14,11 +14,11 @@
             RefreshCommand="{Binding RefreshCommand}"
             IsPullToRefreshEnabled="True"
             ItemsSource="{Binding Offers}"
-            RowHeight="50"
+            RowHeight="100"
             SeparatorVisibility="None">
             <ListView.Header>
                 <StackLayout Orientation="Vertical">
-                    <Grid BackgroundColor="Black">
+                    <Grid BackgroundColor="LightGray">
                         <Image HorizontalOptions="FillAndExpand"
                            HeightRequest="80"
                            Aspect="AspectFit"                           
@@ -26,6 +26,9 @@
                            VerticalOptions="FillAndExpand"
                            Margin="16"/>
                     </Grid>
+                    <!--  accent line  -->
+                    <BoxView BackgroundColor="{StaticResource accentColor}" HeightRequest="3" 
+                             Margin="0,-4,0,4" HorizontalOptions="FillAndExpand"/>
                     <Label
                         IsVisible="{Binding HasNoResults}"
                         Text="{Binding HasNoResultsLabel}"
