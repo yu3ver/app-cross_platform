@@ -107,6 +107,7 @@ namespace Integreat.Shared {
             if (careerOffer == null) return;
             var view = _generalWebViewFactory(careerOffer.Link, false);
             view.Title = "Career4Refugees";
+            careerOffer.IsVisitedImage = "Icon_Small";
             // push a new general webView page, which will show the URL of the offer
             await _navigator.PushAsync(view, Navigation);
         }

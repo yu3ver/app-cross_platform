@@ -10,6 +10,7 @@ using Integreat.Shared.Services.Tracking;
 using Integreat.Shared.Utilities;
 using Integreat.Shared.ViewModels.Resdesign;
 using Integreat.Shared.ViewModels.Resdesign.General;
+using localization;
 using Xamarin.Forms;
 
 namespace Integreat.Shared
@@ -27,10 +28,7 @@ namespace Integreat.Shared
         #region Properties
         public ObservableCollection<SprungbrettJobOffer> Offers
         {
-            get
-            {
-                return _offers;
-            }
+            get { return _offers; }
             private set
             {
                 SetProperty(ref _offers, value);
@@ -45,6 +43,12 @@ namespace Integreat.Shared
             get { return _hasNoResults; }
             set { SetProperty(ref _hasNoResults, value); }
         }
+
+
+        /// <summary>
+        /// Gets the label if this instance has no results for the given location.
+        /// </summary>
+        public string HasNoResultsLabel => AppResources.HasNoResults;
 
         /// <summary>
         /// The displayed header image on the page
@@ -84,16 +88,21 @@ namespace Integreat.Shared
             }
             try
             {
-                var json = await new SprungbrettTemp().FetchJobOffersAsync(url);
-
-                var offers = new ObservableCollection<SprungbrettJobOffer>(json.JobOffers);
-
-                foreach (var jobOffer in offers)
+                var json = await new SprungbrettParser().FetchJobOffersAsync(url);
+                if (json == null)
                 {
-                    jobOffer.OnTapCommand = new Command(OnOfferTapped);
+                    HasNoResults = true;
                 }
+                else
+                {
+                    var offers = new ObservableCollection<SprungbrettJobOffer>(json.JobOffers);
+                    foreach (var jobOffer in offers)
+                    {
+                        jobOffer.OnTapCommand = new Command(OnOfferTapped);
+                    }
 
-                Offers = offers;
+                    Offers = offers;
+                }
             }
             catch (Exception e)
             {

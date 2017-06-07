@@ -47,6 +47,9 @@ namespace Integreat.Shared.Utilities
             [System.Xml.Serialization.XmlElement("volltext")]
             public string Text { get; set; }
 
+
+            [XmlIgnore]
+            public string IsVisitedImage { get; set; } = "Icon_Transparent_Small";
             [XmlIgnore]
             public Command OnTapCommand { get; set; }
         }

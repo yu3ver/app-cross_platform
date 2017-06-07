@@ -186,4 +186,16 @@
   <data name="HasNoResults" xml:space="preserve">
     <value>Has no results.</value>
   </data>
+  <data name="Alphabetization" xml:space="preserve">
+    <value>Alphabetization</value>
+  </data>
+  <data name="Apprenticeships" xml:space="preserve">
+    <value>Apprenticeships</value>
+  </data>
+  <data name="Internships" xml:space="preserve">
+    <value>Internships</value>
+  </data>
+  <data name="Jobs" xml:space="preserve">
+    <value>Jobs</value>
+  </data>
 </root>

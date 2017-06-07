@@ -6,7 +6,7 @@
     xmlns:customRenderer="clr-namespace:Integreat.Shared.CustomRenderer"
     xmlns:pages="clr-namespace:Integreat.Shared.Pages"
     xmlns:converters="clr-namespace:Integreat.Shared.Converters;assembly=Integreat.Droid"
-    BackgroundColor="{StaticResource backgroundColor}">
+    BackgroundColor="White">
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:UriImageSourceConverter x:Key="ImageConverter" />
@@ -41,6 +41,32 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
+                        <ViewCell.View>
+                            <Grid Margin="8, 8, 8, 0" HorizontalOptions="FillAndExpand">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="9"/>
+                                </Grid.RowDefinitions>
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding OnTapCommand}" CommandParameter="{Binding}"/>
+                                </Grid.GestureRecognizers>
+                                <Image Grid.Column="0" Grid.RowSpan="2" Source="{Binding IsVisitedImage, Converter={StaticResource ImageConverter}}" 
+                                       HeightRequest="60" WidthRequest="60" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding JobTitle}" TextColor="{StaticResource textColor}" FontSize="{Binding FontSize}"  Margin="0"/>
+                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding PlaceDescription}" TextColor="{StaticResource textColorSecond}" Margin="0, -2, 0, 0"/>
+                                <!--  accent line  -->
+                                <BoxView Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                         BackgroundColor="{StaticResource accentColor}" HeightRequest="2" 
+                                         Margin="0,4,0,4" HorizontalOptions="FillAndExpand"/>
+                            </Grid>
+                        </ViewCell.View>
+                    </ViewCell>
+                    <!--<ViewCell>
                         <ViewCell.View >
                             <Grid Margin="8, 0, 8, 0" HorizontalOptions="FillAndExpand">
                                 <Grid.RowDefinitions>
@@ -53,13 +79,13 @@
                                 </Grid.GestureRecognizers>
                                 <Label Grid.Row="0" Text="{Binding JobTitle}" TextColor="{StaticResource textColor}" Margin="0"/>
                                 <Label Grid.Row="1" Text="{Binding PlaceDescription}" TextColor="{StaticResource textColorSecond}" Margin="0, -2, 0, 0"/>
-                                <!--  accent line  -->
+                                --><!--  accent line  --><!--
                                 <BoxView Grid.Row="2"
                                          BackgroundColor="{StaticResource accentColor}" HeightRequest="1" 
                                          Margin="0,4,0,4" HorizontalOptions="FillAndExpand"/>
                             </Grid>
                         </ViewCell.View>
-                    </ViewCell>
+                    </ViewCell>-->
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

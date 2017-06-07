@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace Integreat.Shared.Utilities
 {
-    public partial class SprungbrettTemp
+    public class SprungbrettParser
     {
         public async Task<SprungbrettRootObject> FetchJobOffersAsync(string url)
         {
@@ -16,7 +16,7 @@ namespace Integreat.Shared.Utilities
                 using (var client = new HttpClient())
                 {
                     var json = await client.GetStringAsync(new Uri(url));
-                    return JsonConvert.DeserializeObject<SprungbrettRootObject>(json);
+                    return json != null ? JsonConvert.DeserializeObject<SprungbrettRootObject>(json) : null;
                 }
             }
             catch (Exception e)
