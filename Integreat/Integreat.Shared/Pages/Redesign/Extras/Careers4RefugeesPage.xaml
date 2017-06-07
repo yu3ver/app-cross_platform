@@ -22,7 +22,7 @@
             SeparatorVisibility="None">
             <ListView.Header>
                 <StackLayout Orientation="Vertical">
-                    <Grid BackgroundColor="Black">
+                    <Grid BackgroundColor="White">
                         <Image HorizontalOptions="FillAndExpand"
                            HeightRequest="80"
                            Aspect="AspectFit"                           
