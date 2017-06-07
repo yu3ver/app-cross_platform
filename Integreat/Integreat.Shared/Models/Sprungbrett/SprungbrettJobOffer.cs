@@ -1,11 +1,9 @@
 ﻿using Newtonsoft.Json;
-using Xamarin.Forms;
 
 namespace Integreat.Shared.Models.Sprungbrett
 {
-
     //JobOffer class to save and manipulate the json elements
-    public class SprungbrettJobOffer
+    public class SprungbrettJobOffer : JobOfferBase
     {
         [JsonProperty("title")]
         public string Title { get; set; }
@@ -20,7 +18,7 @@ namespace Integreat.Shared.Models.Sprungbrett
         [JsonProperty("zip")]
         public string Zip { get; set; }
         [JsonProperty("city")]
-        public string City { get; set; }
+        public string PlaceDescription { get; set; }
         [JsonProperty("lat")]
         public string Lat { get; set; }
         [JsonProperty("lon")]
@@ -31,9 +29,5 @@ namespace Integreat.Shared.Models.Sprungbrett
         public string Distance { get; set; }
         [JsonProperty("url")]
         public string Url { get; set; }
-
-        public string IsVisitedImage { get; set; } = "Icon_Transparent_Small";
-        public Command OnTapCommand { get; set; }
     }
-
 }
