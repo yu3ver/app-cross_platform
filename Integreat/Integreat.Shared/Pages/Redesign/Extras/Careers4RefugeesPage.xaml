@@ -12,6 +12,9 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
+        <!--todo -Header etwas kleiner 
+                 -icon anzeigen
+                 -etwas mehr margin oben über titel  -->
         <ListView
             IsPullToRefreshEnabled="True"
             IsRefreshing="{Binding IsBusy, Mode=OneWay}"
