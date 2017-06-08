@@ -85,9 +85,10 @@ namespace Integreat.Shared {
                         await XmlWebParser.ParseXmlFromAddressAsync<List<CareerOffer>>(url, "anzeigen"));
 
                 // hook up the command
-                foreach (var careerOffer in offers)
+                foreach (var offer in offers)
                 {
-                    careerOffer.OnTapCommand = new Command(OnOfferTapped);
+                    offer.OnTapCommand = new Command(OnOfferTapped);
+                    offer.OnSelectedCommand = new Command(OnSelectionTapped);
                 }
 
                 Offers = offers;
@@ -108,9 +109,24 @@ namespace Integreat.Shared {
             if (careerOffer == null) return;
             var view = _generalWebViewFactory(careerOffer.Link, false);
             view.Title = "Career4Refugees";
-            careerOffer.IsVisitedImage = "Icon_Small";
+            careerOffer.IsVisited = true;
             // push a new general webView page, which will show the URL of the offer
             await _navigator.PushAsync(view, Navigation);
+        }
+
+        /// <summary>
+        /// Called when an [select button] from an offer is tapped. (By a command)
+        /// </summary>
+        /// <param name="offerObject">The career offer object.</param>
+        private async void OnSelectionTapped(object offerObject)
+        {
+            // try to cast the object, abort if failed
+            var careerOffer = offerObject as CareerOffer;
+            if (careerOffer == null) return;      
+            careerOffer.IsVisited = !careerOffer.IsVisited;
+            OnPropertyChanged(nameof(Offers));
+
+            //todo refresh page not working after tap 
         }
     }
 }

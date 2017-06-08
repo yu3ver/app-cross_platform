@@ -96,9 +96,11 @@ namespace Integreat.Shared
                 else
                 {
                     var offers = new ObservableCollection<SprungbrettJobOffer>(json.JobOffers);
-                    foreach (var jobOffer in offers)
+                    // hook up the command
+                    foreach (var offer in offers)
                     {
-                        jobOffer.OnTapCommand = new Command(OnOfferTapped);
+                        offer.OnTapCommand = new Command(OnOfferTapped);
+                        offer.OnSelectedCommand = new Command(OnSelectionTapped);
                     }
 
                     Offers = offers;
@@ -123,11 +125,26 @@ namespace Integreat.Shared
             // try to cast the object, abort if failed
             var jobOffer = jobOfferObject as SprungbrettJobOffer;
             if (jobOffer == null) return;
-            jobOffer.IsVisitedImage = "Icon_Small";
+            jobOffer.IsVisited = true;
             var view = _generalWebViewFactory(jobOffer.Url, false);
             view.Title = "Sprungbrett";
             // push a new general webView page, which will show the URL of the offer
             await _navigator.PushAsync(view, Navigation);
+        }
+
+        /// <summary>
+        /// Called when an [select button] from an offer is tapped. (By a command)
+        /// </summary>
+        /// <param name="offerObject">The career offer object.</param>
+        private async void OnSelectionTapped(object offerObject)
+        {
+            // try to cast the object, abort if failed
+            var careerOffer = offerObject as SprungbrettJobOffer;
+            if (careerOffer == null) return;
+            careerOffer.IsVisited = !careerOffer.IsVisited;
+            OnPropertyChanged(nameof(Offers));
+
+            //todo refresh page not working after tap 
         }
     }
 }
