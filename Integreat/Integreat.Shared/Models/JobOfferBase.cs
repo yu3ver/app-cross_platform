@@ -11,5 +11,7 @@ namespace Integreat.Shared.Models
         public double FontSize { get; set; } = Device.GetNamedSize(NamedSize.Large, typeof(Label));
         [XmlIgnore]
         public Command OnTapCommand { get; set; }
+        [XmlIgnore]
+        public Command OnSelectedCommand { get; set; }
     }
 }
