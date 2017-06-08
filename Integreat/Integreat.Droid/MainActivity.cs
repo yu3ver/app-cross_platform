@@ -9,6 +9,7 @@ using Android.OS;
 using Autofac;
 using Integreat.Shared;
 using Integreat.Shared.Services.Tracking;
+using RoundedBoxView.Forms.Plugin.Droid;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 
@@ -27,7 +28,10 @@ namespace Integreat.Droid
 
 			Forms.Init(this, bundle);
 
-		    DisplayCrashReport();
+            // userd for round boxes
+		    RoundedBoxViewRenderer.Init();
+
+            DisplayCrashReport();
 			ContinueApplicationStartup();
 		}
 
