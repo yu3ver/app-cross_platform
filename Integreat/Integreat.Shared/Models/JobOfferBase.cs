@@ -6,7 +6,7 @@ namespace Integreat.Shared.Models
     public class JobOfferBase
     {
         [XmlIgnore]
-        public string IsVisitedImage { get; set; } = "Icon_Transparent_Small";
+        public bool IsVisited { get; set; } = false;
         [XmlIgnore]
         public double FontSize { get; set; } = Device.GetNamedSize(NamedSize.Large, typeof(Label));
         [XmlIgnore]
