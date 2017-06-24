@@ -377,6 +377,15 @@ namespace localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Todo add this message!.
+        /// </summary>
+        public static string ShareMessage {
+            get {
+                return ResourceManager.GetString("ShareMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Title.
         /// </summary>
         public static string Title {

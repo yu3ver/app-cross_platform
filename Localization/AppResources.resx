@@ -228,4 +228,7 @@
   <data name="Share" xml:space="preserve">
     <value>Share</value>
   </data>
+  <data name="ShareMessage" xml:space="preserve">
+    <value>Todo add this message!</value>
+  </data>
 </root>
