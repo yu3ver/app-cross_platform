@@ -368,6 +368,15 @@ namespace localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Share.
+        /// </summary>
+        public static string Share {
+            get {
+                return ResourceManager.GetString("Share", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Title.
         /// </summary>
         public static string Title {

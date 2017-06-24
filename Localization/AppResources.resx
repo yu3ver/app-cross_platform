@@ -225,4 +225,7 @@
   <data name="Contact" xml:space="preserve">
     <value>Contact</value>
   </data>
+  <data name="Share" xml:space="preserve">
+    <value>Share</value>
+  </data>
 </root>
