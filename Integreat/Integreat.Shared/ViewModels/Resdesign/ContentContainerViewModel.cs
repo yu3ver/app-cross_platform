@@ -129,8 +129,9 @@ namespace Integreat.Shared.ViewModels.Resdesign
             viewModel.ContentContainer = this;
             navigationPage.Popped += viewModel.OnPagePopped;
 
-            navigationPage.ToolbarItems.Add(new ToolbarItem { Text = AppResources.Search, Icon = "search.png", Command = viewModel.OpenSearchCommand });
-            navigationPage.ToolbarItems.Add(new ToolbarItem { Text = AppResources.Language, Order = ToolbarItemOrder.Secondary, Command = viewModel.ChangeLanguageCommand });
+	        navigationPage.ToolbarItems.Add(new ToolbarItem { Text = AppResources.Search, Icon = "search.png", Command = viewModel.OpenSearchCommand });
+            navigationPage.ToolbarItems.Add(new ToolbarItem { Text = AppResources.Share, Icon = "share.png", Command = viewModel.OpenShareCommand });
+			navigationPage.ToolbarItems.Add(new ToolbarItem { Text = AppResources.Language, Order = ToolbarItemOrder.Secondary, Command = viewModel.ChangeLanguageCommand });
             navigationPage.ToolbarItems.Add(new ToolbarItem { Text = AppResources.Location, Order = ToolbarItemOrder.Secondary, Command = viewModel.ChangeLocationCommand });
             navigationPage.ToolbarItems.Add(new ToolbarItem { Text = AppResources.Contact, Order = ToolbarItemOrder.Secondary, Command = viewModel.OpenContactsCommand });
 
