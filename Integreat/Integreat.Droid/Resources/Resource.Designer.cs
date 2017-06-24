@@ -2489,8 +2489,8 @@ namespace Integreat.Droid
 			// aapt resource value: 0x7f0200d8
 			public const int mr_ic_play_light = 2130837720;
 			
-			// aapt resource value: 0x7f0200e1
-			public const int notification_template_icon_bg = 2130837729;
+			// aapt resource value: 0x7f0200e2
+			public const int notification_template_icon_bg = 2130837730;
 			
 			// aapt resource value: 0x7f0200d9
 			public const int sbi_integreat_quadratisch_farbe = 2130837721;
@@ -2508,13 +2508,16 @@ namespace Integreat.Droid
 			public const int settings100 = 2130837725;
 			
 			// aapt resource value: 0x7f0200de
-			public const int splash = 2130837726;
+			public const int share = 2130837726;
 			
 			// aapt resource value: 0x7f0200df
-			public const int splash_screen = 2130837727;
+			public const int splash = 2130837727;
 			
 			// aapt resource value: 0x7f0200e0
-			public const int StarBig = 2130837728;
+			public const int splash_screen = 2130837728;
+			
+			// aapt resource value: 0x7f0200e1
+			public const int StarBig = 2130837729;
 			
 			static Drawable()
 			{
