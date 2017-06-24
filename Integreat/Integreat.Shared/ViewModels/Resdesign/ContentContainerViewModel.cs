@@ -39,8 +39,8 @@ namespace Integreat.Shared.ViewModels.Resdesign
 
         public List<ToolbarItem> ToolbarItems
         {
-            get { return _toolbarItems; }
-            set { SetProperty(ref _toolbarItems, value); }
+            get => _toolbarItems;
+            set => SetProperty(ref _toolbarItems, value);
         }
 
 
@@ -123,14 +123,16 @@ namespace Integreat.Shared.ViewModels.Resdesign
             // add the content pages to the contentContainer
             children.Add(_viewFactory.Resolve<ExtrasContentPageViewModel>());
 
-            var newPage = _viewFactory.Resolve<MainContentPageViewModel>();
-
+            var newPage = _viewFactory.Resolve<MainContentPageViewModel>();       
             var viewModel = (MainContentPageViewModel)newPage.BindingContext;
             viewModel.ContentContainer = this;
+
+
+            //ShownPages.Push(viewModel);
             navigationPage.Popped += viewModel.OnPagePopped;
 
 	        navigationPage.ToolbarItems.Add(new ToolbarItem { Text = AppResources.Search, Icon = "search.png", Command = viewModel.OpenSearchCommand });
-            navigationPage.ToolbarItems.Add(new ToolbarItem { Text = AppResources.Share, Icon = "share.png", Command = viewModel.OpenShareCommand });
+            navigationPage.ToolbarItems.Add(new ToolbarItem { Text = AppResources.Share, Icon = "share.png", Command = base.ShareCommand });
 			navigationPage.ToolbarItems.Add(new ToolbarItem { Text = AppResources.Language, Order = ToolbarItemOrder.Secondary, Command = viewModel.ChangeLanguageCommand });
             navigationPage.ToolbarItems.Add(new ToolbarItem { Text = AppResources.Location, Order = ToolbarItemOrder.Secondary, Command = viewModel.ChangeLocationCommand });
             navigationPage.ToolbarItems.Add(new ToolbarItem { Text = AppResources.Contact, Order = ToolbarItemOrder.Secondary, Command = viewModel.OpenContactsCommand });
@@ -165,7 +167,6 @@ namespace Integreat.Shared.ViewModels.Resdesign
                 var navPage = child as BaseContentPage;
 
                 navPage?.Refresh(metaDataChanged);
-
             }
         }
     }

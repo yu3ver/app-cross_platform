@@ -10,7 +10,6 @@ namespace Integreat.Shared.ViewModels {
         #region Fields
 
         private readonly INavigator _navigator;
-        private readonly IDialogProvider _dialogProvider;
 
         private Command _onTapCommand;
         #endregion
@@ -23,21 +22,21 @@ namespace Integreat.Shared.ViewModels {
 
         public string HtmlContent
         {
-            get { return _htmlContent; }
-            set { SetProperty(ref _htmlContent, value); }
+            get => _htmlContent;
+            set => SetProperty(ref _htmlContent, value);
         }
 
         public string Description => Page.Description;
         public string Thumbnail => Page.Thumbnail;
 
         public Command OnTapCommand {
-            get { return _onTapCommand; }
-            set { SetProperty(ref _onTapCommand, value); }
+            get => _onTapCommand;
+            set => SetProperty(ref _onTapCommand, value);
         }
 
         public List<PageViewModel> Children {
-            get { return _children; }
-            set { SetProperty(ref _children, value); }
+            get => _children;
+            set => SetProperty(ref _children, value);
         }
 
         /// <summary>
@@ -88,18 +87,16 @@ namespace Integreat.Shared.ViewModels {
 
         #endregion
 
-
-        public PageViewModel(IAnalyticsService analytics, INavigator navigator, Models.Page page, IDialogProvider dialogProvider)
+        public PageViewModel(IAnalyticsService analytics, INavigator navigator, Page page)
         : base(analytics) {
             Title = page.Title;
             _navigator = navigator;
-            _dialogProvider = dialogProvider;
             Page = page;
             OnTapCommand = new Command(ShowPage);
+            ShownPages.Push(this);
         }
 
         public async void ShowPage(object modal) {
-
             await _navigator.PushAsync(this);
             if ("Modal".Equals(modal?.ToString())) {
                 await _navigator.PopModalAsync();
@@ -119,8 +116,8 @@ namespace Integreat.Shared.ViewModels {
         public Command ChangeLanguageCommand => _changeLanguageCommand ?? (_changeLanguageCommand = new Command(OnChangeLanguageClicked));
 
         public Command ChangeLocalLanguageCommand {
-            get { return _changeLocalLanguageCommand; }
-            set { _changeLocalLanguageCommand = value; }
+            get => _changeLocalLanguageCommand;
+            set => _changeLocalLanguageCommand = value;
         }
 
         // command that gets executed, when the user wants to change the language for this page instance. Sends this as parameter

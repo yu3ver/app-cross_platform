@@ -13,7 +13,6 @@ using Integreat.Shared.Pages.Redesign.Main;
 using Integreat.Shared.Services;
 using Integreat.Shared.Services.Tracking;
 using Integreat.Shared.Utilities;
-using Integreat.Shared.ViewModels.Resdesign.General;
 using Integreat.Shared.ViewModels.Resdesign.Main;
 using Integreat.Utilities;
 using Xamarin.Forms;
@@ -22,404 +21,404 @@ using localization;
 
 namespace Integreat.Shared.ViewModels.Resdesign
 {
-	public class MainContentPageViewModel : BaseContentViewModel
-	{
-		#region Fields
+    public class MainContentPageViewModel : BaseContentViewModel
+    {
+        #region Fields
 
-		private readonly INavigator _navigator;
-		private readonly Func<Page, PageViewModel> _pageViewModelFactory; // creates PageViewModel's out of Pages
-		private readonly Func<PageViewModel, IList<PageViewModel>, MainTwoLevelViewModel> _twoLevelViewModelFactory; // factory which creates ViewModels for the two level view;
-		private readonly Func<PageViewModel, MainSingleItemDetailViewModel> _singleItemDetailViewModelFactory; // factory which creates ViewModels for the SingleItem view
-		private readonly Func<IEnumerable<PageViewModel>, SearchViewModel> _pageSearchViewModelFactory;
-		private readonly Func<ContactContentPageViewModel> _contactFactory;
+        private readonly INavigator _navigator;
+        private readonly Func<Page, PageViewModel> _pageViewModelFactory; // creates PageViewModel's out of Pages
+        private readonly Func<PageViewModel, IList<PageViewModel>, MainTwoLevelViewModel> _twoLevelViewModelFactory; // factory which creates ViewModels for the two level view;
+        private readonly Func<PageViewModel, MainSingleItemDetailViewModel> _singleItemDetailViewModelFactory; // factory which creates ViewModels for the SingleItem view
+        private readonly Func<IEnumerable<PageViewModel>, SearchViewModel> _pageSearchViewModelFactory;
+        private readonly Func<ContactContentPageViewModel> _contactFactory;
 
-		private IList<PageViewModel> _loadedPages;
-		private ObservableCollection<PageViewModel> _rootPages;
+        private IList<PageViewModel> _loadedPages;
+        private ObservableCollection<PageViewModel> _rootPages;
 
-		private readonly IDialogProvider _dialogProvider;
-		private new readonly DataLoaderProvider _dataLoaderProvider;
-		private readonly IViewFactory _viewFactory;
-		private readonly Stack<PageViewModel> _shownPages;
+        private readonly IDialogProvider _dialogProvider;
+        private new readonly DataLoaderProvider _dataLoaderProvider;
+        private readonly IViewFactory _viewFactory;
 
-		private ICommand _itemTappedCommand;
-		private ICommand _changeLanguageCommand;
-		private ICommand _changeLocationCommand;
-		private ICommand _openSearchCommand;
-		private ICommand _onOpenContactsCommand;
-		private ICommand _openShareCommand;
+        private ICommand _itemTappedCommand;
+        private ICommand _changeLanguageCommand;
+        private ICommand _changeLocationCommand;
+        private ICommand _openSearchCommand;
+        private ICommand _onOpenContactsCommand;
+        private ICommand _openShareCommand;
 
-		private ContentContainerViewModel _contentContainer;
-		private string _pageIdToShowAfterLoading;
+        private ContentContainerViewModel _contentContainer;
+        private string _pageIdToShowAfterLoading;
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		/// <summary>
-		/// Gets or sets the loaded pages. (I.e. all pages for the selected region/language)
-		/// </summary>
-		/// <value>
-		/// The loaded pages.
-		/// </value>
-		private IList<PageViewModel> LoadedPages
-		{
-			get { return _loadedPages; }
-			set { SetProperty(ref _loadedPages, value); }
-		}
+        /// <summary>
+        /// Gets or sets the loaded pages. (I.e. all pages for the selected region/language)
+        /// </summary>
+        /// <value>
+        /// The loaded pages.
+        /// </value>
+        private IList<PageViewModel> LoadedPages
+        {
+            get => _loadedPages;
+            set => SetProperty(ref _loadedPages, value);
+        }
 
-		/// <summary>
-		/// Gets or sets the root pages. That are all pages without parents.
-		/// </summary>
-		/// <value>
-		/// The root pages.
-		/// </value>
-		public ObservableCollection<PageViewModel> RootPages
-		{
-			get { return _rootPages; }
-			set { SetProperty(ref _rootPages, value); }
-		}
+        /// <summary>
+        /// Gets or sets the root pages. That are all pages without parents.
+        /// </summary>
+        /// <value>
+        /// The root pages.
+        /// </value>
+        public ObservableCollection<PageViewModel> RootPages
+        {
+            get => _rootPages;
+            set => SetProperty(ref _rootPages, value);
+        }
 
-		public ICommand ItemTappedCommand
-		{
-			get { return _itemTappedCommand; }
-			set { SetProperty(ref _itemTappedCommand, value); }
-		}
+        public ICommand ItemTappedCommand
+        {
+            get => _itemTappedCommand;
+            set => SetProperty(ref _itemTappedCommand, value);
+        }
 
-		public ICommand OpenSearchCommand
-		{
-			get { return _openSearchCommand; }
-			set { SetProperty(ref _openSearchCommand, value); }
-		}
+        public ICommand OpenSearchCommand
+        {
+            get => _openSearchCommand;
+            set => SetProperty(ref _openSearchCommand, value);
+        }
 
-		public ICommand OpenShareCommand
-		{
-			get { return _openShareCommand; }
-			set { SetProperty(ref _openShareCommand, value); }
-		}
-
-
-		public ICommand OpenContactsCommand
-		{
-			get { return _onOpenContactsCommand; }
-			set { SetProperty(ref _onOpenContactsCommand, value); }
-		}
-
-		public ICommand ChangeLanguageCommand
-		{
-			get { return _changeLanguageCommand; }
-			set { SetProperty(ref _changeLanguageCommand, value); }
-		}
-		public ICommand ChangeLocationCommand
-		{
-			get { return _changeLocationCommand; }
-			set { SetProperty(ref _changeLocationCommand, value); }
-		}
-
-		public ContentContainerViewModel ContentContainer
-		{
-			get { return _contentContainer; }
-			set { SetProperty(ref _contentContainer, value); }
-		}
-		private string RootParentId => Page.GenerateKey("0", LastLoadedLocation, LastLoadedLanguage);
-
-		#endregion
-
-		public MainContentPageViewModel(IAnalyticsService analytics, INavigator navigator, DataLoaderProvider dataLoaderProvider,
-			Func<Page, PageViewModel> pageViewModelFactory
-			, IDialogProvider dialogProvider
-			, Func<PageViewModel, IList<PageViewModel>, MainTwoLevelViewModel> twoLevelViewModelFactory
-			, Func<PageViewModel, MainSingleItemDetailViewModel> singleItemDetailViewModelFactory
-			, Func<IEnumerable<PageViewModel>, SearchViewModel> pageSearchViewModelFactory
-			, Func<ContactContentPageViewModel> contactContentPageViewModelFactory
-			, IViewFactory viewFactory, Func<ContactContentPageViewModel> contactFactory)
-		: base(analytics, dataLoaderProvider)
-		{
-
-			Title = AppResources.Categories;
-			Icon = Icon = Device.RuntimePlatform == Device.Android ? null : "home150";
-			_navigator = navigator;
-			_navigator.HideToolbar(this);
-			_dataLoaderProvider = dataLoaderProvider;
-			_pageViewModelFactory = pageViewModelFactory;
-			_twoLevelViewModelFactory = twoLevelViewModelFactory;
-			_singleItemDetailViewModelFactory = singleItemDetailViewModelFactory;
-			_dialogProvider = dialogProvider;
-			_pageSearchViewModelFactory = pageSearchViewModelFactory;
-			_viewFactory = viewFactory;
-			_contactFactory = contactFactory;
-
-			_shownPages = new Stack<PageViewModel>();
-
-			ItemTappedCommand = new Command(OnPageTapped);
-			OpenSearchCommand = new Command(OnOpenSearch);
-			ChangeLanguageCommand = new Command(OnChangeLanguage);
-			ChangeLocationCommand = new Command(OnChangeLocation);
-			OpenContactsCommand = new Command(OnOpenContacts);
-			OpenShareCommand = new Command(OnShare);
-		}
-
-		private void OnShare(object obj)
-		{
-			if (IsBusy) return;
-		}
+        public ICommand OpenShareCommand
+        {
+            get => _openShareCommand;
+            set => SetProperty(ref _openShareCommand, value);
+        }
 
 
-		private void OnChangeLocation(object obj)
-		{
-			if (IsBusy) return;
-			//todo is that all or have we to remove something from resources??
-			ContentContainer.OpenLocationSelection();
-		}
+        public ICommand OpenContactsCommand
+        {
+            get => _onOpenContactsCommand;
+            set => SetProperty(ref _onOpenContactsCommand, value);
+        }
 
-		private async void OnOpenContacts(object obj)
-		{
-			if (IsBusy) return;
+        public ICommand ChangeLanguageCommand
+        {
+            get => _changeLanguageCommand;
+            set => SetProperty(ref _changeLanguageCommand, value);
+        }
+        public ICommand ChangeLocationCommand
+        {
+            get => _changeLocationCommand;
+            set => SetProperty(ref _changeLocationCommand, value);
+        }
 
-			// todo something is wrong here :/
-			var contactViewModel = _contactFactory();
+        public ContentContainerViewModel ContentContainer
+        {
+            get => _contentContainer;
+            set => SetProperty(ref _contentContainer, value);
+        }
+        private string RootParentId => Page.GenerateKey("0", LastLoadedLocation, LastLoadedLanguage);
 
-			//trigger load content 
-			contactViewModel?.RefreshCommand.Execute(false);
-			await _navigator.PushAsync(contactViewModel, Navigation);
-		}
+        #endregion
 
-		private async void OnChangeLanguage(object obj)
-		{
-			if (IsBusy) return;
+        public MainContentPageViewModel(IAnalyticsService analytics, INavigator navigator, DataLoaderProvider dataLoaderProvider,
+            Func<Page, PageViewModel> pageViewModelFactory
+            , IDialogProvider dialogProvider
+            , Func<PageViewModel, IList<PageViewModel>, MainTwoLevelViewModel> twoLevelViewModelFactory
+            , Func<PageViewModel, MainSingleItemDetailViewModel> singleItemDetailViewModelFactory
+            , Func<IEnumerable<PageViewModel>, SearchViewModel> pageSearchViewModelFactory
+            , IViewFactory viewFactory, Func<ContactContentPageViewModel> contactFactory)
+        : base(analytics, dataLoaderProvider)
+        {
 
-			// if there are no pages in the stack, it means we're in root. Show the normal language selection
-			if (_shownPages.IsNullOrEmpty())
-			{
-				ContentContainer.OpenLanguageSelection();
-				return;
-			}
+            Title = AppResources.Categories;
+            Icon = Icon = Device.RuntimePlatform == Device.Android ? null : "home150";
+            _navigator = navigator;
+            _navigator.HideToolbar(this);
+            _dataLoaderProvider = dataLoaderProvider;
+            _pageViewModelFactory = pageViewModelFactory;
+            _twoLevelViewModelFactory = twoLevelViewModelFactory;
+            _singleItemDetailViewModelFactory = singleItemDetailViewModelFactory;
+            _dialogProvider = dialogProvider;
+            _pageSearchViewModelFactory = pageSearchViewModelFactory;
+            _viewFactory = viewFactory;
+            _contactFactory = contactFactory;
 
-			// get the current shown page
-			var pageModel = _shownPages.Peek().Page;
-			if (pageModel.AvailableLanguages.IsNullOrEmpty())
-			{
-				return; // abort if there are no other languages available
-			}
+            ItemTappedCommand = new Command(OnPageTapped);
+            OpenSearchCommand = new Command(OnOpenSearch);
+            ChangeLanguageCommand = new Command(OnChangeLanguage);
+            ChangeLocationCommand = new Command(OnChangeLocation);
+            OpenContactsCommand = new Command(OnOpenContacts);
+            OpenShareCommand = new Command(OnShare);           
+        }
 
-			// get the languages the page is available in. These only contain short names and ids (not keys), therefore we need to parse them a bit
-			var languageShortNames = pageModel.AvailableLanguages.Select(x => x.LanguageId);
+        private void OnShare(object obj)
+        {
+            if (IsBusy) return;
+        }
 
-			// gets all available languages for the current location
-			var languages = (await LoadLanguages()).ToList();
-			// filter them by the available language short names
-			var availableLanguages = languages.Where(x => languageShortNames.Contains(x.ShortName)).ToList();
-			// get the full names for the short names
-			var displayedNames = availableLanguages.Select(x => x.Name).ToArray();
 
-			// display a selection popup and await the user interaction
-			var action = await _dialogProvider.DisplayActionSheet("Select a Language?", "Cancel", null, displayedNames);
+        private void OnChangeLocation(object obj)
+        {
+            if (IsBusy) return;
+            //todo is that all or have we to remove something from resources??
+            ContentContainer.OpenLocationSelection();
+        }
 
-			// action contains the selected wording, or null if the user aborted. Get the selected language
-			var selectedLanguage = availableLanguages.FirstOrDefault(x => x.Name == action);
-			if (selectedLanguage != null)
-			{
-				// load and show page. Get the page Id and generate the page key
-				var otherPageId = pageModel.AvailableLanguages.First(x => x.LanguageId == selectedLanguage.ShortName).OtherPageId;
-				var otherPageKey = Page.GenerateKey(otherPageId, selectedLanguage.Location, selectedLanguage);
+        private async void OnOpenContacts(object obj)
+        {
+            if (IsBusy) return;
 
-				_pageIdToShowAfterLoading = otherPageKey;
+            // todo something is wrong here :/
+            var contactViewModel = _contactFactory();
 
-				await Navigation.PopToRootAsync();
-				_shownPages.Clear();
+            //trigger load content 
+            contactViewModel?.RefreshCommand.Execute(false);
+            await _navigator.PushAsync(contactViewModel, Navigation);
+        }
 
-				// set new language
-				Preferences.SetLanguage(Preferences.Location(), selectedLanguage);
-				ContentContainer.RefreshAll(true);
-			}
-			else
-			{
-				Debug.Write("No language selected");
-			}
-		}
+        private async void OnChangeLanguage(object obj)
+        {
+            if (IsBusy) return;
 
-		private async void OnOpenSearch(object obj)
-		{
-			if (IsBusy) return;
+            // if there are no pages in the stack, it means we're in root. Show the normal language selection
+            if (ShownPages.IsNullOrEmpty())
+            {
+                ContentContainer.OpenLanguageSelection();
+                return;
+            }
 
-			await _navigator.PushAsync(_pageSearchViewModelFactory(LoadedPages), Navigation);
-		}
+            // get the current shown page
+            var pageModel = CurrentPage;
+            if (pageModel.AvailableLanguages.IsNullOrEmpty())
+            {
+                return; // abort if there are no other languages available
+            }
 
-		private async Task<IEnumerable<Language>> LoadLanguages()
-		{
-			return await _dataLoaderProvider.LanguagesDataLoader.Load(false, LastLoadedLocation ?? (LastLoadedLocation =
-					(await _dataLoaderProvider.LocationsDataLoader.Load(false)).FirstOrDefault(x => x.Id == Preferences.Location())));
-		}
+            // get the languages the page is available in. These only contain short names and ids (not keys), therefore we need to parse them a bit
+            var languageShortNames = pageModel.AvailableLanguages.Select(x => x.LanguageId);
 
-		/// <summary>
-		/// Called when the user [tap]'s on a item.
-		/// </summary>
-		/// <param name="pageViewModel">The view model of the clicked page item.</param>
-		private async void OnPageTapped(object pageViewModel)
-		{
-			var pageVm = pageViewModel as PageViewModel;
-			if (pageVm == null) return;
-			_shownPages.Push(pageVm);
-			if (pageVm.Children.Count == 0)
-			{
-				// target page has no children, display only content
-				var vm = _singleItemDetailViewModelFactory(pageVm);
-				var view = _viewFactory.Resolve(vm);
-				await Navigation.PushAsync(view);
-				vm.NavigatedTo();
-				((MainSingleItemDetailPage)view).OnNavigatingCommand = new Command(OnNavigating);
-			}
-			else
-			{
-				// target page has children, display another two level view
-				await _navigator.PushAsync(_twoLevelViewModelFactory(pageVm, LoadedPages), Navigation);
-			}
-		}
+            // gets all available languages for the current location
+            var languages = (await LoadLanguages()).ToList();
+            // filter them by the available language short names
+            var availableLanguages = languages.Where(x => languageShortNames.Contains(x.ShortName)).ToList();
+            // get the full names for the short names
+            var displayedNames = availableLanguages.Select(x => x.Name).ToArray();
 
-		/// <summary>
-		/// Called when the user clicks on a link in a WebView
-		/// </summary>
-		/// <param name="objectEventArgs">The NavigatingEventArgs as object</param>
-		[SecurityCritical]
-		private void OnNavigating(object objectEventArgs)
-		{
-			// CA2140 violation - transparent method accessing a critical type.  This can be fixed by any of:
-			//  1. Make TransparentMethod critical
-			//  2. Make TransparentMethod safe critical
-			//  3. Make CriticalClass safe critical
-			//  4. Make CriticalClass transparent       
-			//  Warning CA2140  Transparent method 'MainContentPageViewModel.OnNavigating(object)' references security
-			//  critical type 'WebNavigatingEventArgs'.In order for this reference to be allowed under the security 
-			//  transparency rules, either 'MainContentPageViewModel.OnNavigating(object)' must become security critical 
-			//  or safe - critical, or 'WebNavigatingEventArgs' become security safe - critical or 
-			//  transparent.
+            // display a selection popup and await the user interaction
+            var action = await _dialogProvider.DisplayActionSheet("Select a Language?", "Cancel", null, displayedNames);
 
-			var eventArgs = objectEventArgs as WebNavigatingEventArgs;
-			if (eventArgs == null) return; // abort if the parse failed
-										   // check if the URL is a page URL
-			if (eventArgs.Url.Contains(Constants.IntegreatReleaseUrl))
-			{
-				// if so, open the corresponding page instead
+            // action contains the selected wording, or null if the user aborted. Get the selected language
+            var selectedLanguage = availableLanguages.FirstOrDefault(x => x.Name == action);
+            if (selectedLanguage != null)
+            {
+                // load and show page. Get the page Id and generate the page key
+                var otherPageId = pageModel.AvailableLanguages.First(x => x.LanguageId == selectedLanguage.ShortName).OtherPageId;
+                var otherPageKey = Page.GenerateKey(otherPageId, selectedLanguage.Location, selectedLanguage);
 
-				// search page which has a permalink that matches
-				var page = LoadedPages.FirstOrDefault(x => x.Page.Permalinks != null && x.Page.Permalinks.AllUrls.Contains(eventArgs.Url));
-				// if we have found a corresponding page, cancel the web navigation and open it in the app instead
-				if (page == null) return;
+                _pageIdToShowAfterLoading = otherPageKey;
 
-				// cancel the original navigating event
-				eventArgs.Cancel = true;
-				// and instead act as like the user tapped on the page
-				OnPageTapped(page);
-			}
+                await Navigation.PopToRootAsync();
+                ShownPages.Clear();
+                ShownPages.Push(LoadedPages.First());
 
-			// check if it's a mail or telephone address
-			if (eventArgs.Url.StartsWith("mailto") || eventArgs.Url.StartsWith("tel"))
-			{
-				// if so, open it on the device and cancel the webRequest
-				Device.OpenUri(new Uri(eventArgs.Url));
-				eventArgs.Cancel = true;
-			}
-		}
+                // set new language
+                Preferences.SetLanguage(Preferences.Location(), selectedLanguage);
+                ContentContainer.RefreshAll(true);
+            }
+            else
+            {
+                Debug.Write("No language selected");
+            }
+        }
 
-		/// <summary>
-		/// Loads all pages for the given language and location from the persistenceService.
-		/// </summary>
-		protected override async void LoadContent(bool forced = false, Language forLanguage = null, Location forLocation = null)
-		{
-			if (forLocation == null) forLocation = LastLoadedLocation;
-			if (forLanguage == null) forLanguage = LastLoadedLanguage;
+        private async void OnOpenSearch(object obj)
+        {
+            if (IsBusy) return;
 
-			if (IsBusy || forLocation == null || forLanguage == null)
-			{
-				Debug.WriteLine("LoadPages could not be executed");
-				if (IsBusy) Debug.WriteLine("The app is busy");
-				if (forLocation == null) Debug.WriteLine("Location is null");
-				if (forLanguage == null) Debug.WriteLine("Language is null");
+            await _navigator.PushAsync(_pageSearchViewModelFactory(LoadedPages), Navigation);
+        }
 
-				return;
-			}
+        private async Task<IEnumerable<Language>> LoadLanguages()
+        {
+            return await _dataLoaderProvider.LanguagesDataLoader.Load(false, LastLoadedLocation ?? (LastLoadedLocation =
+                    (await _dataLoaderProvider.LocationsDataLoader.Load(false)).FirstOrDefault(x => x.Id == Preferences.Location())));
+        }
 
-			try
-			{
-				IsBusy = true;
-				LoadedPages?.Clear();
-				RootPages?.Clear();
-				//var parentPageId = _selectedPage?.Page?.PrimaryKey ?? Models.Page.GenerateKey(0, Location, Language);
-				var pages = await _dataLoaderProvider.PagesDataLoader.Load(forced, forLanguage, forLocation, err => ErrorMessage = err);
+        /// <summary>
+        /// Called when the user [tap]'s on a item.
+        /// </summary>
+        /// <param name="pageViewModel">The view model of the clicked page item.</param>
+        private async void OnPageTapped(object pageViewModel)
+        {
+            var pageVm = pageViewModel as PageViewModel;
+            if (pageVm == null) return;
+            ShownPages.Push(pageVm);
+            if (pageVm.Children.Count == 0)
+            {
+                // target page has no children, display only content
+                var vm = _singleItemDetailViewModelFactory(pageVm);
+                var view = _viewFactory.Resolve(vm);
+                await Navigation.PushAsync(view);
+                vm.NavigatedTo();
+                ((MainSingleItemDetailPage)view).OnNavigatingCommand = new Command(OnNavigating);
+            }
+            else
+            {
+                // target page has children, display another two level view
+                await _navigator.PushAsync(_twoLevelViewModelFactory(pageVm, LoadedPages), Navigation);
+            }
+        }
 
-				LoadedPages = pages.Select(page => _pageViewModelFactory(page)).ToList();
+        /// <summary>
+        /// Called when the user clicks on a link in a WebView
+        /// </summary>
+        /// <param name="objectEventArgs">The NavigatingEventArgs as object</param>
+        [SecurityCritical]
+        private void OnNavigating(object objectEventArgs)
+        {
+            // CA2140 violation - transparent method accessing a critical type.  This can be fixed by any of:
+            //  1. Make TransparentMethod critical
+            //  2. Make TransparentMethod safe critical
+            //  3. Make CriticalClass safe critical
+            //  4. Make CriticalClass transparent       
+            //  Warning CA2140  Transparent method 'MainContentPageViewModel.OnNavigating(object)' references security
+            //  critical type 'WebNavigatingEventArgs'.In order for this reference to be allowed under the security 
+            //  transparency rules, either 'MainContentPageViewModel.OnNavigating(object)' must become security critical 
+            //  or safe - critical, or 'WebNavigatingEventArgs' become security safe - critical or 
+            //  transparent.
 
-				// register commands
-				foreach (var pageViewModel in LoadedPages)
-				{
-					pageViewModel.OnTapCommand = new Command(OnPageTapped);
-				}
+            var eventArgs = objectEventArgs as WebNavigatingEventArgs;
+            if (eventArgs == null) return; // abort if the parse failed
+                                           // check if the URL is a page URL
+            if (eventArgs.Url.Contains(Constants.IntegreatReleaseUrl))
+            {
+                // if so, open the corresponding page instead
 
-				// set children
-				SetChildrenProperties(LoadedPages);
+                // search page which has a permalink that matches
+                var page = LoadedPages.FirstOrDefault(x => x.Page.Permalinks != null && x.Page.Permalinks.AllUrls.Contains(eventArgs.Url));
+                // if we have found a corresponding page, cancel the web navigation and open it in the app instead
+                if (page == null) return;
 
-				SetRootPages();
+                // cancel the original navigating event
+                eventArgs.Cancel = true;
+                // and instead act as like the user tapped on the page
+                OnPageTapped(page);
+            }
 
-			}
-			finally
-			{
-				if (_pageIdToShowAfterLoading != null && LoadedPages != null)
-				{
-					// find page id
-					var page = LoadedPages.FirstOrDefault(x => x.Page.PrimaryKey == _pageIdToShowAfterLoading);
-					_pageIdToShowAfterLoading = null;
+            // check if it's a mail or telephone address
+            if (eventArgs.Url.StartsWith("mailto") || eventArgs.Url.StartsWith("tel"))
+            {
+                // if so, open it on the device and cancel the webRequest
+                Device.OpenUri(new Uri(eventArgs.Url));
+                eventArgs.Cancel = true;
+            }
+        }
 
-					if (page != null)
-					{
-						var pagesToPush = new List<PageViewModel> { page };
-						// go trough each parent until we get to a root page (which has it's parent ID set to the rootPageId)
+        /// <summary>
+        /// Loads all pages for the given language and location from the persistenceService.
+        /// </summary>
+        protected override async void LoadContent(bool forced = false, Language forLanguage = null, Location forLocation = null)
+        {
+            if (forLocation == null) forLocation = LastLoadedLocation;
+            if (forLanguage == null) forLanguage = LastLoadedLanguage;
 
-						var parent = LoadedPages.FirstOrDefault(x => x.Page.PrimaryKey == page.Page.ParentId);
-						while (parent != null && parent.Page.PrimaryKey != RootParentId)
-						{
-							// add the parent to the list of pages to be pushed
-							pagesToPush.Add(parent);
-							// get the next parent
-							parent = LoadedPages.FirstOrDefault(x => x.Page.PrimaryKey == parent.Page.ParentId);
-						}
+            if (IsBusy || forLocation == null || forLanguage == null)
+            {
+                Debug.WriteLine("LoadPages could not be executed");
+                if (IsBusy) Debug.WriteLine("The app is busy");
+                if (forLocation == null) Debug.WriteLine("Location is null");
+                if (forLanguage == null) Debug.WriteLine("Language is null");
 
-						// go to the list in reverse order since the deepest element is at i = 0 (which is the page we want to show)
-						for (var i = pagesToPush.Count - 1; i >= 0; i--)
-						{
-							OnPageTapped(pagesToPush[i]);
-						}
-					}
-				}
-				IsBusy = false;
-			}
-		}
+                return;
+            }
 
-		/// <summary>
-		/// Sets the root pages.
-		/// </summary>
-		private void SetRootPages()
-		{
-			//var id = SelectedPage?.Page?.PrimaryKey ?? "0";
-			var key = RootParentId;
-			RootPages = new ObservableCollection<PageViewModel>(LoadedPages.Where(x => x.Page.ParentId == key).OrderBy(x => x.Page.Order));
-		}
+            try
+            {
+                IsBusy = true;
+                LoadedPages?.Clear();
+                RootPages?.Clear();
+                //var parentPageId = _selectedPage?.Page?.PrimaryKey ?? Models.Page.GenerateKey(0, Location, Language);
+                var pages = await _dataLoaderProvider.PagesDataLoader.Load(forced, forLanguage, forLocation, err => ErrorMessage = err);
 
-		/// <summary>
-		/// Sets the children properties for each given page.
-		/// </summary>
-		/// <param name="onPages">The target pages.</param>
-		private void SetChildrenProperties(IList<PageViewModel> onPages)
-		{
-			// go through each page and set the children list
-			foreach (var pageViewModel in onPages)
-			{
-				pageViewModel.Children = onPages.Where(x => x.Page.ParentId == pageViewModel.Page.PrimaryKey).ToList();
-			}
-		}
+                LoadedPages = pages.Select(page => _pageViewModelFactory(page)).ToList();
 
-		public void OnPagePopped(object sender, NavigationEventArgs e)
-		{
-			if (_shownPages != null && _shownPages.Count > 0)
-				_shownPages.Pop();
-		}
-	}
+                // register commands
+                foreach (var pageViewModel in LoadedPages)
+                {
+                    pageViewModel.OnTapCommand = new Command(OnPageTapped);
+                }
+
+                // set children
+                SetChildrenProperties(LoadedPages);
+
+                SetRootPages();
+
+            }
+            finally
+            {
+                if (_pageIdToShowAfterLoading != null && LoadedPages != null)
+                {
+                    // find page id
+                    var page = LoadedPages.FirstOrDefault(x => x.Page.PrimaryKey == _pageIdToShowAfterLoading);
+                    _pageIdToShowAfterLoading = null;
+
+                    if (page != null)
+                    {
+                        var pagesToPush = new List<PageViewModel> { page };
+                        // go trough each parent until we get to a root page (which has it's parent ID set to the rootPageId)
+
+                        var parent = LoadedPages.FirstOrDefault(x => x.Page.PrimaryKey == page.Page.ParentId);
+                        while (parent != null && parent.Page.PrimaryKey != RootParentId)
+                        {
+                            // add the parent to the list of pages to be pushed
+                            pagesToPush.Add(parent);
+                            // get the next parent
+                            parent = LoadedPages.FirstOrDefault(x => x.Page.PrimaryKey == parent.Page.ParentId);
+                        }
+
+                        // go to the list in reverse order since the deepest element is at i = 0 (which is the page we want to show)
+                        for (var i = pagesToPush.Count - 1; i >= 0; i--)
+                        {
+                            OnPageTapped(pagesToPush[i]);
+                        }
+                    }
+                }
+                IsBusy = false;
+            }
+        }
+
+        /// <summary>
+        /// Sets the root pages.
+        /// </summary>
+        private void SetRootPages()
+        {
+            //var id = SelectedPage?.Page?.PrimaryKey ?? "0";
+            var key = RootParentId;
+            RootPages = new ObservableCollection<PageViewModel>(LoadedPages
+                                .Where(x => x.Page.ParentId == key)
+                                .OrderBy(x => x.Page.Order));
+        }
+
+        /// <summary>
+        /// Sets the children properties for each given page.
+        /// </summary>
+        /// <param name="onPages">The target pages.</param>
+        private void SetChildrenProperties(IList<PageViewModel> onPages)
+        {
+            // go through each page and set the children list
+            foreach (var pageViewModel in onPages)
+            {
+                pageViewModel.Children = onPages.Where(x => x.Page.ParentId == pageViewModel.Page.PrimaryKey).ToList();
+            }
+        }
+
+        public void OnPagePopped(object sender, NavigationEventArgs e)
+        {
+            if (ShownPages == null || ShownPages.Any()) return;
+
+            ShownPages.Pop();
+        }
+    }
 }

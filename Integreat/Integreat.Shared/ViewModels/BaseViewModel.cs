@@ -28,6 +28,9 @@ namespace Integreat.Shared.ViewModels
 
         private ICommand _onAppearingCommand;
         private ICommand _metaDataChangedCommand;
+        private ICommand _onShareCommand;
+        private ICommand _refreshCommand;
+
 
 
         public BaseViewModel(IAnalyticsService analyticsService)
@@ -146,7 +149,6 @@ namespace Integreat.Shared.ViewModels
             _analyticsService.TrackPage(Title);
         }
 
-        private ICommand _refreshCommand;
         /// <summary>
         /// Gets the refresh command.
         /// </summary>
@@ -191,6 +193,15 @@ namespace Integreat.Shared.ViewModels
                 if (_shownPages == null || !_shownPages.Any()) return null;
                 return _shownPages.Peek().Page;
             }
+        }
+
+        public ICommand ShareCommand => _onShareCommand ?? (_onShareCommand =  new Command(OnShare));
+
+        public void OnShare(object obj)
+        {
+            if (IsBusy) return;
+
+            Debug.WriteLine(CurrentPage.Permalinks.Url, "Info");
         }
 
         /// <summary>

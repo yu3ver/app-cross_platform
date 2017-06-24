@@ -4,6 +4,7 @@ using Integreat.Shared.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows.Input;
 using Integreat.Shared.Data.Loader;
 using Integreat.Shared.Services;
@@ -15,52 +16,60 @@ namespace Integreat.Shared
 {
     public class LanguagesViewModel : BaseViewModel
     {
-        public string Description { get; set; }
-        private readonly INavigator _navigator;
 
         private readonly Location _location;
+        private readonly DataLoaderProvider _dataLoaderProvider;
+        private IEnumerable<Language> _items;
+        private string _errorMessage;
+        private Language _selectedLanguage;
+
+        private ICommand _loadLanguages;
+        private ICommand _forceRefreshLanguagesCommand;
+        private ICommand _onLanguageSelectedCommand;
+
+        public LanguagesViewModel(IAnalyticsService analytics, Location location, DataLoaderProvider dataLoaderProvider, INavigator navigator)
+            : base(analytics)
+        {
+            Title = AppResources.Language;
+            navigator.HideToolbar(this);
+
+            Items = new ObservableCollection<Language>();
+            _location = location;
+            _dataLoaderProvider = dataLoaderProvider;
+        }
+
+        public string Description { get; set; }
+
         public Location Location => _location;
 
-
-        private Language _selectedLanguage;
         public Language SelectedLanguage
         {
-            get { return _selectedLanguage; }
+            get => _selectedLanguage;
             set
             {
-                _selectedLanguage = value;
+                SetProperty(ref _selectedLanguage, value);
                 if (value != null)
-                {
                     LanguageSelected();
-                }
             }
         }
 
-
         public ICommand OnLanguageSelectedCommand
         {
-            get { return _onLanguageSelectedCommand; }
-            set { SetProperty(ref _onLanguageSelectedCommand, value); }
+            get => _onLanguageSelectedCommand;
+            set => SetProperty(ref _onLanguageSelectedCommand, value);
         }
-        private Command _loadLanguages;
-        public Command LoadLanguagesCommand => _loadLanguages ?? (_loadLanguages = new Command(() => ExecuteLoadLanguages()));
-
-        private Command _forceRefreshLanguagesCommand;
-        private ICommand _onLanguageSelectedCommand;
-        public Command ForceRefreshLanguagesCommand => _forceRefreshLanguagesCommand ?? (_forceRefreshLanguagesCommand = new Command(() => ExecuteLoadLanguages(true)));
-
-
-        private IEnumerable<Language> _items;
-        private DataLoaderProvider _dataLoaderProvider;
-        private string _errorMessage;
+        public ICommand LoadLanguagesCommand => _loadLanguages ?? (_loadLanguages = new Command(() => ExecuteLoadLanguages()));
+        public ICommand ForceRefreshLanguagesCommand => _forceRefreshLanguagesCommand ?? (_forceRefreshLanguagesCommand = new Command(() => ExecuteLoadLanguages(true)));
 
 
         /// <summary>
         /// Gets or sets the error message that a view may display.
         /// </summary>
-        public string ErrorMessage {
-            get { return _errorMessage; }
-            set {
+        public string ErrorMessage
+        {
+            get => _errorMessage;
+            set
+            {
                 SetProperty(ref _errorMessage, value);
                 OnPropertyChanged(nameof(ErrorMessageVisible));
             }
@@ -73,25 +82,10 @@ namespace Integreat.Shared
 
         public IEnumerable<Language> Items
         {
-            get { return _items; }
-            set
-            {
-                SetProperty(ref _items, value);
-            }
+            get => _items;
+            set => SetProperty(ref _items, value);
         }
 
-
-        public LanguagesViewModel(IAnalyticsService analytics, Location location, DataLoaderProvider dataLoaderProvider, INavigator navigator)
-        : base(analytics)
-        {
-            Title = AppResources.Language;
-            _navigator = navigator;
-            _navigator.HideToolbar(this);
-
-            Items = new ObservableCollection<Language>();
-            _location = location;
-            _dataLoaderProvider = dataLoaderProvider;
-        }
         private void LanguageSelected()
         {
             Preferences.SetLanguage(_location, SelectedLanguage);
@@ -115,10 +109,7 @@ namespace Integreat.Shared
 
         private async void ExecuteLoadLanguages(bool forceRefresh = false)
         {
-            if (IsBusy)
-            {
-                return;
-            }
+            if (IsBusy){ return; }
             try
             {
                 IsBusy = true;
@@ -132,7 +123,7 @@ namespace Integreat.Shared
             {
                 IsBusy = false;
             }
-            Console.WriteLine(AppResources.Languages_loaded);
+            Debug.WriteLine(AppResources.Languages_loaded);
         }
 
         private static int CompareLanguage(Language a, Language b)

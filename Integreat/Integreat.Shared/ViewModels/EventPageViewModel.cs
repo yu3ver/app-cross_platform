@@ -6,8 +6,8 @@ namespace Integreat.Shared.ViewModels
 {
     public class EventPageViewModel : PageViewModel
     {
-        private EventPage _eventPage;
-        public EventPageViewModel(IAnalyticsService analytics, INavigator navigator, EventPage page, IDialogProvider dialogProvider) : base(analytics, navigator, page, dialogProvider)
+        private readonly EventPage _eventPage;
+        public EventPageViewModel(IAnalyticsService analytics, INavigator navigator, EventPage page) : base(analytics, navigator, page)
         {
             _eventPage = page;
         }

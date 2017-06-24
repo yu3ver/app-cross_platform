@@ -9,35 +9,30 @@ namespace Integreat.Shared.ViewModels
     public class SearchViewModel : BaseViewModel
     {
         private readonly IEnumerable<PageViewModel> _pages;
-
-        public IList<PageViewModel> FoundPages {
-            get { return _foundPages; }
-            set { SetProperty(ref _foundPages, value); }
-        }
+        private string _searchText = string.Empty;
+        private IList<PageViewModel> _foundPages;
 
         public SearchViewModel(IAnalyticsService analytics, IEnumerable<PageViewModel> pages)
             : base(analytics)
         {
-            if (pages != null)
-            {
-                Title = AppResources.Search;
-                _pages = pages;
-                Search();
-            }
-            else
-            {
-                throw new ArgumentNullException(nameof(pages));
-            }
+            Title = AppResources.Search;
+            _pages = pages ?? throw new ArgumentNullException(nameof(pages));
+            Search();
+        }
+
+        public IList<PageViewModel> FoundPages
+        {
+            get => _foundPages;
+            set => SetProperty(ref _foundPages, value);
         }
 
         #region View Data
 
-        private string _searchText = string.Empty;
-        private IList<PageViewModel> _foundPages;
-
-        public string SearchText {
-            get { return _searchText; }
-            set {
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
                 if (SetProperty(ref _searchText, value))
                 {
                     Search();
@@ -48,7 +43,7 @@ namespace Integreat.Shared.ViewModels
 
         #region Commands
 
-        public void Search()
+        private void Search()
         {
             IsBusy = true;
             var found = _pages.Where(x => x.Page.Find(SearchText)).ToList();
@@ -63,7 +58,7 @@ namespace Integreat.Shared.ViewModels
         /// <param name="pageA">The first page a.</param>
         /// <param name="pageB">The second page b.</param>
         /// <returns>An integer that indicates the lexical relationship between the two comparands.</returns>
-        private int Comparison(PageViewModel pageA, PageViewModel pageB) => string.CompareOrdinal(pageA.Title, pageB.Title);
+        private static int Comparison(PageViewModel pageA, PageViewModel pageB) => string.CompareOrdinal(pageA.Title, pageB.Title);
 
         #endregion
     }
