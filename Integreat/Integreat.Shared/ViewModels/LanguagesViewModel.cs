@@ -27,7 +27,8 @@ namespace Integreat.Shared
         private ICommand _forceRefreshLanguagesCommand;
         private ICommand _onLanguageSelectedCommand;
 
-        public LanguagesViewModel(IAnalyticsService analytics, Location location, DataLoaderProvider dataLoaderProvider, INavigator navigator)
+        public LanguagesViewModel(IAnalyticsService analytics, Location location, 
+                                    DataLoaderProvider dataLoaderProvider, INavigator navigator)
             : base(analytics)
         {
             Title = AppResources.Language;
