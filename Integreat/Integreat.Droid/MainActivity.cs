@@ -1,7 +1,5 @@
-﻿
-using System;
+﻿using System;
 using System.IO;
-using System.Security;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
@@ -11,19 +9,18 @@ using Autofac;
 using Integreat.Shared;
 using Integreat.Shared.Services.Tracking;
 using localization;
+using Plugin.CurrentActivity;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 
 namespace Integreat.Droid
 {
-
     [Activity(Label = "Integreat", Icon = "@drawable/icon", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : FormsAppCompatActivity
     {
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
-
 
             AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
             TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;
@@ -43,15 +40,14 @@ namespace Integreat.Droid
 
         private void ContinueApplicationStartup()
         {
-
             ToolbarResource = Resource.Layout.toolbar;
             TabLayoutResource = Resource.Layout.tabs;
 
             var cb = new ContainerBuilder();
             cb.RegisterInstance(CreateAnalytics());
             LoadApplication(new IntegreatApp(cb));
+            CrossCurrentActivity.Current.Activity = this;
         }
-
 
         private IAnalyticsService CreateAnalytics()
         {
@@ -59,8 +55,6 @@ namespace Integreat.Droid
             instance.Initialize(this);
             return instance;
         }
-
-
 
         private static void TaskSchedulerOnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs unobservedTaskExceptionEventArgs)
         {
@@ -139,8 +133,6 @@ namespace Integreat.Droid
 
             return true;
         }
-
-
         //iOS: Different than Android. Must be in FinishedLaunching, not in Main.
         // In AppDelegate
         /*public override bool FinishedLaunching(UIApplication uiApplication, NSDictionary options)
@@ -150,7 +142,6 @@ namespace Integreat.Droid
 			TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;  
     ...
 }*/
-
     }
 }
 
