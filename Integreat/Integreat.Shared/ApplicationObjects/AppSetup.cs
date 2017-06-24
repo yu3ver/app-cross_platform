@@ -5,11 +5,8 @@ using Integreat.Shared.Pages;
 using Integreat.Shared.ApplicationObjects;
 using Integreat.Shared.ViewModels;
 using Integreat.Shared;
-using Integreat.Shared.Utilities;
 using Integreat.Shared.ViewFactory;
-using Page = Xamarin.Forms.Page;
 using DLToolkit.Forms.Controls;
-using Integreat.Shared.Models;
 using Integreat.Shared.Pages.Redesign;
 using Integreat.Shared.Pages.Redesign.Events;
 using Integreat.Shared.Pages.Redesign.General;
@@ -28,7 +25,6 @@ namespace Integreat.ApplicationObject
         //Inizializes a ContainerBuilder which is needed to create instances of IContainer.
         private readonly ContainerBuilder _cb;
 
-        //
         public AppSetup(Application application, ContainerBuilder cb)
         {
             _application = application;
