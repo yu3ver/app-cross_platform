@@ -28,6 +28,10 @@ namespace Integreat.Shared.Pages.Redesign {
             // we don't want this to build twice, so we remove the event listener
             Appearing -= OnAppearing;
 
+            // second subscription to always switch back to mainPage after the language has changed
+            _vm.LanguageSelected -= VmOnLanguageSelectedChangeMainPage; // ensure not to subscribe twice
+            _vm.LanguageSelected += VmOnLanguageSelectedChangeMainPage;
+
             var locationId = Preferences.Location();
             if (locationId < 0 || Preferences.Language(locationId).IsNullOrEmpty()) {
                 // not language / location selected
@@ -41,6 +45,13 @@ namespace Integreat.Shared.Pages.Redesign {
             _vm.CreateMainView(Children, Application.Current.MainPage as NavigationPage);
             CurrentPage = Children[1];
         }
+
+        private void VmOnLanguageSelectedChangeMainPage(object sender, EventArgs e)
+        {
+            if(Children.Count >= 2)
+                CurrentPage = Children[1];
+        }
+
         [SecurityCritical]
         private void VmOnLanguageSelected(object sender, EventArgs eventArgs) {
             if (_vm != null)
