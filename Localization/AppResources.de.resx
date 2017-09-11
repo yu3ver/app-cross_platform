@@ -174,6 +174,12 @@
   <data name="Extras" xml:space="preserve">
     <value>Extras</value>
   </data>
+  <data name="FirebaseDescription" xml:space="preserve">
+    <value>Wähle aus für welche Gruppen du Nachrichten erhalten willst.</value>
+  </data>
+  <data name="FirebaseName" xml:space="preserve">
+    <value>Push Benachrichtigungen</value>
+  </data>
   <data name="HasNoResults" xml:space="preserve">
     <value>Keine Einträge gefunden.</value>
   </data>

@@ -249,4 +249,10 @@
   <data name="HtmlRawViewDeactivated" xml:space="preserve">
     <value>The html raw view is deactivated</value>
   </data>
+  <data name="FirebaseDescription" xml:space="preserve">
+    <value>Change for which groups you want to receive notifications for.</value>
+  </data>
+  <data name="FirebaseName" xml:space="preserve">
+    <value>Push Messages</value>
+  </data>
 </root>

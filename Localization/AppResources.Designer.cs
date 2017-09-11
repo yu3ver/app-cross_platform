@@ -233,6 +233,24 @@ namespace localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change for which groups you want to receive notifications for..
+        /// </summary>
+        public static string FirebaseDescription {
+            get {
+                return ResourceManager.GetString("FirebaseDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Push Messages.
+        /// </summary>
+        public static string FirebaseName {
+            get {
+                return ResourceManager.GetString("FirebaseName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Has no results..
         /// </summary>
         public static string HasNoResults {
