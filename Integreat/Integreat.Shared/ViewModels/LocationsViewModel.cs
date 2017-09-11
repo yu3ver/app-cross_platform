@@ -140,7 +140,7 @@ namespace Integreat.Shared.ViewModels
             Debug.WriteLine("Locations loaded");
         }
 
-        public static int CompareLocations(Location a, Location b)
+        private static int CompareLocations(Location a, Location b)
         {
             return string.Compare(a.NameWithoutStreetPrefix, b.NameWithoutStreetPrefix, StringComparison.Ordinal);
         }
