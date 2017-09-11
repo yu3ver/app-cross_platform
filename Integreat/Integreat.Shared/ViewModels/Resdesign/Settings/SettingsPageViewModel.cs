@@ -23,6 +23,7 @@ namespace Integreat.Shared.ViewModels.Resdesign.Settings
         private readonly Func<string, GeneralWebViewPageViewModel> _generalWebViewFactory;
         private string _disclaimerContent; // HTML text for the disclaimer
         private ContentContainerViewModel _contentContainer; // content container needed to open location selection after clearing settings
+        private Func<FirebaseTokenPageViewModel> _firebaseFactory; // factory to open the FirebaseTokenPage;
 
         /// <summary>
         /// Gets the disclaimer text.
@@ -38,6 +39,11 @@ namespace Integreat.Shared.ViewModels.Resdesign.Settings
         /// Gets the version text.
         /// </summary>
         public string VersionText => AppResources.Version;
+
+        /// <summary>
+        /// Gets the text for the push messages button.
+        /// </summary>
+        public string PushText => AppResources.FirebaseName;
 
         /// <summary>
         /// Get the current Version
@@ -70,23 +76,40 @@ namespace Integreat.Shared.ViewModels.Resdesign.Settings
         public ICommand ResetSettingsCommand { get; set; }
         public ICommand HtmlRawViewCommand { get; set; }
         public ICommand OpenDisclaimerCommand { get; set; }
+        public ICommand OpenPushSettingsCommand { get; set; }
 
         public SettingsPageViewModel(IAnalyticsService analyticsService, INavigator navigator, ContentContainerViewModel contentContainer, DataLoaderProvider dataLoaderProvider
-            , IViewFactory viewFactory, Func<string, GeneralWebViewPageViewModel> generalWebViewFactory) : base(analyticsService, dataLoaderProvider)
+            , IViewFactory viewFactory, Func<string, GeneralWebViewPageViewModel> generalWebViewFactory, Func<FirebaseTokenPageViewModel> firebaseFactory) : base(analyticsService, dataLoaderProvider)
         {
             _navigator = navigator;
             _contentContainer = contentContainer;
             _generalWebViewFactory = generalWebViewFactory;
+            _firebaseFactory = firebaseFactory;
             HtmlRawViewCommand = new Command(HtmlRawView);
 
             Title = AppResources.Settings;
             ClearCacheCommand = new Command(ClearCache);
             ResetSettingsCommand = new Command(ResetSettings);
             OpenDisclaimerCommand = new Command(OpenDisclaimer);
+            OpenPushSettingsCommand = new Command(OpenPushSettings);
             UpdateCacheSizeText();
 
             _tapCount = 0;
             OnRefresh();
+        }
+
+        /// <summary>
+        /// Opens the push settings page.
+        /// </summary>
+        private async void OpenPushSettings()
+        {
+            if (IsBusy || string.IsNullOrWhiteSpace(_disclaimerContent)) return;
+
+            var viewModel = _firebaseFactory();
+
+            //trigger load content 
+            viewModel?.RefreshCommand.Execute(false);
+            await _navigator.PushAsync(viewModel, Navigation);
         }
 
         private async void UpdateCacheSizeText()
