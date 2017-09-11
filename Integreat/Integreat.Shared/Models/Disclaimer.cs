@@ -1,6 +1,12 @@
-﻿namespace Integreat.Shared.Models
+﻿using System.Security;
+
+namespace Integreat.Shared.Models
 {
-	public class Disclaimer : Page
+    /// <summary>
+    /// Derivation of Page for Disclaimer. However merely used for abstraction purposes as a Disclaimer does not provide any additional properties.
+    /// </summary>
+    [SecurityCritical]
+    public class Disclaimer : Page
 	{
 	}
 }

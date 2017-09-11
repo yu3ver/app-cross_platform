@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.IO;
-using System.Net;
-using System.Net.Http;
-using System.Text;
 using System.Windows.Input;
 using Integreat.Shared.Data.Loader;
 using Integreat.Shared.Models;
@@ -14,36 +8,32 @@ using Integreat.Shared.Services.Tracking;
 using Integreat.Shared.ViewModels.Resdesign.General;
 using Xamarin.Forms;
 using localization;
-using Org.Apache.Http.Client.Methods;
 
 namespace Integreat.Shared.ViewModels.Resdesign
 {
     public class ExtrasContentPageViewModel : BaseContentViewModel
     {
         private ObservableCollection<ExtraAppEntry> _extras;
-        private INavigator _navigator;
-        private String plz_hwk;
-        private String _noteInternetText;
+        private readonly INavigator _navigator;
+        private string _plzHwk;
+        private string _noteInternetText;
         private BaseContentViewModel _activeViewModel;
-        private Func<string, bool, GeneralWebViewPageViewModel> _generalWebViewFactory;
+        private readonly Func<string, GeneralWebViewPageViewModel> _generalWebViewFactory;
         private ICommand _itemTappedCommand;
-        private Func<Careers4RefugeesViewModel> _careers4RefugeesFactory;
-        private Func<SprungbrettViewModel> _sprungbrettFactory;
+        private readonly Func<Careers4RefugeesViewModel> _careers4RefugeesFactory;
+        private readonly Func<SprungbrettViewModel> _sprungbrettFactory;
 
-        #region Fields
-
-        #endregion
 
         #region Properties
 
         public ObservableCollection<ExtraAppEntry> Extras {
-            get { return _extras; }
-            private set { SetProperty(ref _extras, value); }
+            get => _extras;
+            private set => SetProperty(ref _extras, value);
         }
 
         public ICommand ItemTappedCommand {
-            get { return _itemTappedCommand; }
-            set { SetProperty(ref _itemTappedCommand, value); }
+            get => _itemTappedCommand;
+            set => SetProperty(ref _itemTappedCommand, value);
         }
 
         #endregion
@@ -52,12 +42,12 @@ namespace Integreat.Shared.ViewModels.Resdesign
         public ExtrasContentPageViewModel(IAnalyticsService analytics, INavigator navigator, DataLoaderProvider dataLoaderProvider
             , Func<Careers4RefugeesViewModel> careers4RefugeesFactory
             , Func<SprungbrettViewModel> sprungbrettFactory
-            , Func<string, bool, GeneralWebViewPageViewModel> generalWebViewFactory)
+            , Func<string, GeneralWebViewPageViewModel> generalWebViewFactory)
             : base(analytics, dataLoaderProvider)
         {
             NoteInternetText = AppResources.NoteInternet;
             Title = AppResources.Extras;
-            Icon = Device.OS == TargetPlatform.Android ? null : "extras100";
+            Icon = Device.RuntimePlatform == Device.Android ? null : "extras100";
             _navigator = navigator;
             _generalWebViewFactory = generalWebViewFactory;
             _careers4RefugeesFactory = careers4RefugeesFactory;
@@ -69,8 +59,8 @@ namespace Integreat.Shared.ViewModels.Resdesign
         }
 
         public string NoteInternetText {
-            get { return _noteInternetText; }
-            set { SetProperty(ref _noteInternetText, value); }
+            get => _noteInternetText;
+            set => SetProperty(ref _noteInternetText, value);
         }
 
         private void InvokeOnTap(object obj)
@@ -83,7 +73,7 @@ namespace Integreat.Shared.ViewModels.Resdesign
         {
             // push a new general webView page, which will show the URL of the offer
 
-            var view = _generalWebViewFactory("https://abc.serlo.org/try/#1", false);
+            var view = _generalWebViewFactory("https://abc.serlo.org/try/#1");
             view.Title = "SerloABC";
             await _navigator.PushAsync(view, Navigation);
         }
@@ -97,14 +87,12 @@ namespace Integreat.Shared.ViewModels.Resdesign
             const string radius = "50"; // search radius
 
             var view = _generalWebViewFactory(
-                $"<html><body onload='document.lehrstellenradar.submit()'><form name='lehrstellenradar' action='https://www.lehrstellen-radar.de/5100,0,lsrlist.html' method='post'><input type='text' hidden='hidden' name='partner' value='{partner}'><input type='text' hidden='hidden' name='radius' value='{radius}' /><input type='text' hidden='hidden' name='plz' value='{plz_hwk}'/><input type='submit' hidden='hidden'></form></body></html>", true);
+                $"<html><body onload='document.lehrstellenradar.submit()'><form name='lehrstellenradar' action='https://www.lehrstellen-radar.de/5100,0,lsrlist.html' method='post'><input type='text' hidden='hidden' name='partner' value='{partner}'><input type='text' hidden='hidden' name='radius' value='{radius}' /><input type='text' hidden='hidden' name='plz' value='{_plzHwk}'/><input type='submit' hidden='hidden'></form></body></html>");
 
             view.Title = "Lehrstellenradar";
 
             await _navigator.PushAsync(view, Navigation);
         }
-
-
 
         private async void OnExtraTap(object obj)
         {
@@ -114,6 +102,8 @@ namespace Integreat.Shared.ViewModels.Resdesign
             // push page on stack
             var vm = asExtraAppEntry.ViewModelFactory() as BaseContentViewModel;
             _activeViewModel = vm;
+            if (vm == null) return;
+            _activeViewModel.Title = vm.Title;
             _activeViewModel?.RefreshCommand.Execute(false);
             await _navigator.PushAsync(vm, Navigation);
         }
@@ -133,22 +123,23 @@ namespace Integreat.Shared.ViewModels.Resdesign
             if (forLocation != null)
             {
                 if (forLocation.SprungbrettEnabled.IsTrue())
+                {
                     Extras.Add(new ExtraAppEntry
                     {
                         Thumbnail = "sbi_integreat_quadratisch_farbe.jpg",
-                        Title = "Sprungbrett",
+                        Title = AppResources.Internships,
                         ViewModelFactory = _sprungbrettFactory,
                         OnTapCommand = new Command(OnExtraTap)
                     });
-
+                }
                 if (forLocation.LehrstellenRadarEnabled.IsTrue())
                 {
 
-                    plz_hwk = forLocation.Zip;
+                    _plzHwk = forLocation.Zip;
                     Extras.Add(new ExtraAppEntry
                     {
                         Thumbnail = "lsradar.jpg",
-                        Title = "Lehrstellenradar",
+                        Title = AppResources.Apprenticeships,
                         ViewModelFactory = null,
                         OnTapCommand = new Command(OnLehrstellenTapped)
                     });
@@ -158,7 +149,7 @@ namespace Integreat.Shared.ViewModels.Resdesign
                     Extras.Add(new ExtraAppEntry
                     {
                         Thumbnail = "careers4refugees_de_icon.jpg",
-                        Title = "Careers 4 Refugees",
+                        Title = AppResources.Jobs,
                         ViewModelFactory = _careers4RefugeesFactory,
                         OnTapCommand = new Command(OnExtraTap)
                     });
@@ -167,7 +158,7 @@ namespace Integreat.Shared.ViewModels.Resdesign
                     Extras.Add(new ExtraAppEntry
                     {
                         Thumbnail = "serloabc.jpg",
-                        Title = "Serlo ABC",
+                        Title = AppResources.Alphabetization,
                         ViewModelFactory = null,
                         OnTapCommand = new Command(OnSerloTapped)
                     });

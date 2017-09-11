@@ -20,18 +20,38 @@ namespace Integreat.Shared.ViewModels {
         public Page Page { get; set; }
 
         public string Content => Page.Content;
+
         public string Description => Page.Description;
         public string Thumbnail => Page.Thumbnail;
 
         public Command OnTapCommand {
-            get { return _onTapCommand; }
-            set { SetProperty(ref _onTapCommand, value); }
+            get => _onTapCommand;
+            set => SetProperty(ref _onTapCommand, value);
         }
 
         public List<PageViewModel> Children {
-            get { return _children; }
-            set { SetProperty(ref _children, value); }
+            get => _children;
+            set => SetProperty(ref _children, value);
         }
+
+        /// <summary>
+        /// Used to style two level view's accent lines
+        /// </summary>
+        public double AccentLineHeight { get; set; } = 2.0;
+
+        /// <summary>
+        /// Used to style two level view's item margins
+        /// </summary>
+        public Thickness ItemMargin { get; set; }
+
+        /// <summary>
+        /// Used to style two level view's item margins, however not with labels but with the whole grid
+        /// </summary>
+        public Thickness GridMargin { get; set; }
+        /// <summary>
+        /// Used to style two level view's text colors (via opacity)
+        /// </summary>
+        public double ItemOpacity { get; set; }
 
         /// <summary>
         /// Gets the height in pixel if all of this items children were to be displayed in the TwoLevelView
@@ -92,15 +112,14 @@ namespace Integreat.Shared.ViewModels {
         public Command ChangeLanguageCommand => _changeLanguageCommand ?? (_changeLanguageCommand = new Command(OnChangeLanguageClicked));
 
         public Command ChangeLocalLanguageCommand {
-            get { return _changeLocalLanguageCommand; }
-            set { _changeLocalLanguageCommand = value; }
+            get => _changeLocalLanguageCommand;
+            set => _changeLocalLanguageCommand = value;
         }
 
         // command that gets executed, when the user wants to change the language for this page instance. Sends this as parameter
 
-        private async void OnChangeLanguageClicked() {
+        private void OnChangeLanguageClicked() {
             if (Page.AvailableLanguages.IsNullOrEmpty()) {
-                return;
             }
 
             /*

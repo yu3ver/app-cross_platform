@@ -15,9 +15,9 @@ namespace Integreat.Shared.ViewModels.Resdesign {
 
         private readonly Func<EventPage, EventPageViewModel> _eventPageViewModelFactory;
 
-        private INavigator _navigator;
+        private readonly INavigator _navigator;
         private ObservableCollection<EventPageViewModel> _eventPages;
-        private Func<PageViewModel, EventsSingleItemDetailViewModel> _singleItemDetailViewModelFactory;
+        private readonly Func<EventPageViewModel, EventsSingleItemDetailViewModel> _singleItemDetailViewModelFactory;
         private string _noResultText;
 
         #endregion
@@ -25,7 +25,7 @@ namespace Integreat.Shared.ViewModels.Resdesign {
         #region Properties
 
         public ObservableCollection<EventPageViewModel> EventPages {
-            get { return _eventPages; }
+            get => _eventPages;
             set
             {
                 SetProperty(ref _eventPages, value); 
@@ -37,18 +37,18 @@ namespace Integreat.Shared.ViewModels.Resdesign {
 
         public string NoResultText
         {
-            get { return _noResultText; }
-            set { SetProperty(ref _noResultText, value); }
+            get => _noResultText;
+            set => SetProperty(ref _noResultText, value);
         }
 
         #endregion
 
         public EventsContentPageViewModel(IAnalyticsService analytics, INavigator navigator, Func<EventPage,
-            EventPageViewModel> eventPageViewModelFactory, DataLoaderProvider dataLoaderProvider, Func<PageViewModel, EventsSingleItemDetailViewModel> singleItemDetailViewModelFactory)
+            EventPageViewModel> eventPageViewModelFactory, DataLoaderProvider dataLoaderProvider, Func<EventPageViewModel, EventsSingleItemDetailViewModel> singleItemDetailViewModelFactory)
         : base(analytics, dataLoaderProvider) {
             Title = AppResources.News;
             NoResultText = AppResources.NoEvents;
-            Icon = Device.OS == TargetPlatform.Android ? null : "calendar159";
+            Icon = Device.RuntimePlatform == Device.Android ? null : "calendar159";
             _navigator = navigator;
             _navigator.HideToolbar(this);
             _eventPageViewModelFactory = eventPageViewModelFactory;
@@ -60,11 +60,15 @@ namespace Integreat.Shared.ViewModels.Resdesign {
         /// </summary>
         /// <param name="pageViewModel">The view model of the clicked page item.</param>
         private async void OnPageTapped(object pageViewModel) {
-            var pageVm = pageViewModel as PageViewModel;
+            var pageVm = pageViewModel as EventPageViewModel;
             if (pageVm == null) return;
             // target page has no children, display only content
-            await _navigator.PushAsync(_singleItemDetailViewModelFactory(pageVm), Navigation);
-
+            var header = "<h3>"+ pageVm.Title + "</h3>" + "<h4>" + AppResources.Date + ": " +
+                         pageVm.EventDate  +"<br/>"+ AppResources.Location + ": " + pageVm.EventLocation + "</h4><br>";
+            pageVm.EventContent = header + pageVm.Content;
+            var view = _singleItemDetailViewModelFactory(pageVm);
+            view.Title = pageVm.Title;
+            await _navigator.PushAsync(view, Navigation);
         }
 
         /// <summary>
@@ -94,6 +98,7 @@ namespace Integreat.Shared.ViewModels.Resdesign {
                 eventPages = (from evt in eventPages
                               let evtModel = (evt.Page as EventPage)?.Event
                               where evtModel != null && new DateTime(evtModel.EndTime) > DateTime.Now
+                              orderby new DateTime(evtModel.StartTime)
                               select evt).ToList();
 
 

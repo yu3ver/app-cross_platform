@@ -5,12 +5,21 @@ using Newtonsoft.Json;
 using Integreat.Shared.Utilities;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using System.Security;
 
 namespace Integreat.Shared.Models {
+
+    /// <summary>
+    /// Describes a page in our data model. A page may contain Content and other pages as children.
+    /// </summary>
+    [SecuritySafeCritical]
     public class Page {
 
         [JsonProperty("parent")]
         public string ParentJsonId { get; set; }
+
+        [JsonProperty("permalink")]
+        public PagePermalinks Permalinks { get; set; }
 
         [JsonProperty("parentId")]
         public string ParentId { get; set; }
@@ -65,24 +74,43 @@ namespace Integreat.Shared.Models {
         }
     }
 
+    /// <summary>
+    /// Special converter used to convert the Date in REST format to our DateTime format and vice-versa
+    /// </summary>
+    [SecurityCritical]
     internal class DateConverter : JsonConverter {
+        [SecurityCritical]
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
             var dt = value as DateTime? ?? new DateTime();
             writer.WriteValue(dt.ToRestAcceptableString());
         }
-
+        [SecurityCritical]
         public override bool CanConvert(Type type) {
             return Reflections.IsAssignableFrom(typeof(DateTime), type);
         }
-
+        [SecurityCritical]
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
                                               JsonSerializer serializer) {
-            var readerValue = reader.Value.ToString();
-            return readerValue.DateTimeFromRestString();
+            try
+            {
+                // try to parse the value
+                var readerValue = reader.Value.ToString();
+                return readerValue.DateTimeFromRestString();
+            }
+            catch (Exception)
+            {
+                // as this may fail, when the stored DateTime was in a different format than the current culture, we catch this and return null instead. 
+                return null;
+            }
         }
     }
 
+    /// <summary>
+    /// Converter used to resolve full page id's for the given other page id's
+    /// </summary>
+    [SecurityCritical]
     internal class AvailableLanguageCollectionConverter : JsonConverter {
+        [SecurityCritical]
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
             var asList = value as List<AvailableLanguage>;
             if (asList == null) return;
@@ -91,11 +119,11 @@ namespace Integreat.Shared.Models {
             var jObject = new JObject(props);
             serializer.Serialize(writer, jObject);
         }
-
+        [SecurityCritical]
         public override bool CanConvert(Type type) {
             return Reflections.IsAssignableFrom(typeof(List<AvailableLanguage>), type);
         }
-
+        [SecurityCritical]
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
             JsonSerializer serializer) {
             try {
@@ -108,7 +136,6 @@ namespace Integreat.Shared.Models {
                 return new List<AvailableLanguage>();
             }
         }
-
     }
 }
 
