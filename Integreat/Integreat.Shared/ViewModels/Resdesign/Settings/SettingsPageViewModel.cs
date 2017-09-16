@@ -22,8 +22,33 @@ namespace Integreat.Shared.ViewModels.Resdesign.Settings
         private readonly INavigator _navigator;
         private readonly Func<string, GeneralWebViewPageViewModel> _generalWebViewFactory;
         private string _disclaimerContent; // HTML text for the disclaimer
-        private ContentContainerViewModel _contentContainer; // content container needed to open location selection after clearing settings
-        private Func<FirebaseTokenPageViewModel> _firebaseFactory; // factory to open the FirebaseTokenPage;
+
+        private readonly ContentContainerViewModel _contentContainer
+            ; // content container needed to open location selection after clearing settings
+
+        private readonly Func<FirebaseTokenPageViewModel> _firebaseFactory; // factory to open the FirebaseTokenPage;
+
+        public SettingsPageViewModel(IAnalyticsService analyticsService, INavigator navigator,
+            ContentContainerViewModel contentContainer, DataLoaderProvider dataLoaderProvider,
+            Func<string, GeneralWebViewPageViewModel> generalWebViewFactory,
+            Func<FirebaseTokenPageViewModel> firebaseFactory) : base(analyticsService, dataLoaderProvider)
+        {
+            _navigator = navigator;
+            _contentContainer = contentContainer;
+            _generalWebViewFactory = generalWebViewFactory;
+            _firebaseFactory = firebaseFactory;
+            HtmlRawViewCommand = new Command(HtmlRawView);
+
+            Title = AppResources.Settings;
+            ClearCacheCommand = new Command(ClearCache);
+            ResetSettingsCommand = new Command(ResetSettings);
+            OpenDisclaimerCommand = new Command(OpenDisclaimer);
+            OpenPushSettingsCommand = new Command(OpenPushSettings);
+            UpdateCacheSizeText();
+
+            _tapCount = 0;
+            OnRefresh();
+        }
 
         /// <summary>
         /// Gets the disclaimer text.
@@ -49,6 +74,7 @@ namespace Integreat.Shared.ViewModels.Resdesign.Settings
         /// Get the current Version
         /// </summary>
         public string Version => System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
         /// <summary>
         /// Gets the cache size text.
         /// </summary>
@@ -78,26 +104,6 @@ namespace Integreat.Shared.ViewModels.Resdesign.Settings
         public ICommand OpenDisclaimerCommand { get; set; }
         public ICommand OpenPushSettingsCommand { get; set; }
 
-        public SettingsPageViewModel(IAnalyticsService analyticsService, INavigator navigator, ContentContainerViewModel contentContainer, DataLoaderProvider dataLoaderProvider
-            , IViewFactory viewFactory, Func<string, GeneralWebViewPageViewModel> generalWebViewFactory, Func<FirebaseTokenPageViewModel> firebaseFactory) : base(analyticsService, dataLoaderProvider)
-        {
-            _navigator = navigator;
-            _contentContainer = contentContainer;
-            _generalWebViewFactory = generalWebViewFactory;
-            _firebaseFactory = firebaseFactory;
-            HtmlRawViewCommand = new Command(HtmlRawView);
-
-            Title = AppResources.Settings;
-            ClearCacheCommand = new Command(ClearCache);
-            ResetSettingsCommand = new Command(ResetSettings);
-            OpenDisclaimerCommand = new Command(OpenDisclaimer);
-            OpenPushSettingsCommand = new Command(OpenPushSettings);
-            UpdateCacheSizeText();
-
-            _tapCount = 0;
-            OnRefresh();
-        }
-
         /// <summary>
         /// Opens the push settings page.
         /// </summary>
@@ -120,7 +126,7 @@ namespace Integreat.Shared.ViewModels.Resdesign.Settings
             var fileSize = await DirectorySize.CalculateDirectorySizeAsync(Constants.CachedFilePath + "/");
 
             // parse the bytes into an readable string
-            string[] sizes = { "B", "KB", "MB", "GB", "TB" };
+            string[] sizes = {"B", "KB", "MB", "GB", "TB"};
             var order = 0;
             // while the size is dividable by 1024
             while (fileSize >= 1024 && order < sizes.Length - 1)
@@ -184,18 +190,22 @@ namespace Integreat.Shared.ViewModels.Resdesign.Settings
                 var pageToPop = Navigation.NavigationStack.ElementAt(Navigation.NavigationStack.Count - 2);
                 Navigation.RemovePage(pageToPop);
             }
-            SettingsStatusText = Preferences.GetHtmlRawViewSetting() ? AppResources.HtmlRawViewActivated : AppResources.HtmlRawViewDeactivated;
+            SettingsStatusText = Preferences.GetHtmlRawViewSetting()
+                ? AppResources.HtmlRawViewActivated
+                : AppResources.HtmlRawViewDeactivated;
             _tapCount = 0;
         }
 
-        protected override async void LoadContent(bool forced = false, Language forLanguage = null, Location forLocation = null)
+        protected override async void LoadContent(bool forced = false, Language forLanguage = null,
+            Location forLocation = null)
         {
             // load the disclaimer text
             try
             {
                 IsBusy = true;
 
-                var pages = await _dataLoaderProvider.DisclaimerDataLoader.Load(true, LastLoadedLanguage, LastLoadedLocation);
+                var pages = await _dataLoaderProvider.DisclaimerDataLoader.Load(true, LastLoadedLanguage,
+                    LastLoadedLocation);
                 _disclaimerContent = string.Join("<br><br>", pages.Select(x => x.Content));
             }
             finally
