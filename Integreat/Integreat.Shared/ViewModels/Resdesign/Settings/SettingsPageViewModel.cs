@@ -50,6 +50,27 @@ namespace Integreat.Shared.ViewModels.Resdesign.Settings
             OnRefresh();
         }
 
+        private readonly ContentContainerViewModel _contentContainer; // content container needed to open location selection after clearing settings
+
+        public SettingsPageViewModel(IAnalyticsService analyticsService, INavigator navigator,
+            ContentContainerViewModel contentContainer, DataLoaderProvider dataLoaderProvider
+            , IViewFactory viewFactory, Func<string, GeneralWebViewPageViewModel> generalWebViewFactory) : base(
+            analyticsService, dataLoaderProvider)
+        {
+            _navigator = navigator;
+            _contentContainer = contentContainer;
+            _generalWebViewFactory = generalWebViewFactory;
+            HtmlRawViewCommand = new Command(HtmlRawView);
+
+            Title = AppResources.Settings;
+            ClearCacheCommand = new Command(ClearCache);
+            ResetSettingsCommand = new Command(ResetSettings);
+            OpenDisclaimerCommand = new Command(OpenDisclaimer);
+            UpdateCacheSizeText();
+
+            _tapCount = 0;
+            OnRefresh();
+        }
         /// <summary>
         /// Gets the disclaimer text.
         /// </summary>
@@ -73,7 +94,24 @@ namespace Integreat.Shared.ViewModels.Resdesign.Settings
         /// <summary>
         /// Get the current Version
         /// </summary>
-        public string Version => System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        public string Version
+        {
+            get
+            {
+                // ReSharper disable once RedundantAssignment
+                var version = "2.1.2";
+#if __ANDROID__
+                var context = Forms.Context;
+                version = context.PackageManager.GetPackageInfo(context.PackageName, 0).VersionName;
+#elif __IOS__
+                version = Foundation.NSBundle.MainBundle.InfoDictionary[new Foundation.NSString("CFBundleVersion")]
+                    .ToString();
+#else
+                version = "2.1.2";
+#endif
+                return version;
+            }
+        }
 
         /// <summary>
         /// Gets the cache size text.
@@ -110,14 +148,11 @@ namespace Integreat.Shared.ViewModels.Resdesign.Settings
         private async void OpenPushSettings()
         {
             if (IsBusy || string.IsNullOrWhiteSpace(_disclaimerContent)) return;
-
             var viewModel = _firebaseFactory();
-
             //trigger load content 
             viewModel?.RefreshCommand.Execute(false);
             await _navigator.PushAsync(viewModel, Navigation);
         }
-
         private async void UpdateCacheSizeText()
         {
             CacheSizeText = $"{AppResources.CacheSize} {AppResources.Calculating}";
