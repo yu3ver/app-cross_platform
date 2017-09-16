@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Input;
+using Integreat.Shared.ApplicationObjects;
 using Integreat.Shared.Data.Loader;
 using Integreat.Shared.Models;
 using Integreat.Shared.Services;
@@ -21,6 +22,7 @@ namespace Integreat.Shared.ViewModels.Resdesign.Settings
         private readonly INavigator _navigator;
         private readonly Func<string, GeneralWebViewPageViewModel> _generalWebViewFactory;
         private string _disclaimerContent; // HTML text for the disclaimer
+<<<<<<< HEAD
 
         private readonly ContentContainerViewModel _contentContainer
             ; // content container needed to open location selection after clearing settings
@@ -48,7 +50,30 @@ namespace Integreat.Shared.ViewModels.Resdesign.Settings
             _tapCount = 0;
             OnRefresh();
         }
+=======
+>>>>>>> dev
 
+        private readonly ContentContainerViewModel _contentContainer; // content container needed to open location selection after clearing settings
+
+        public SettingsPageViewModel(IAnalyticsService analyticsService, INavigator navigator,
+            ContentContainerViewModel contentContainer, DataLoaderProvider dataLoaderProvider
+            , IViewFactory viewFactory, Func<string, GeneralWebViewPageViewModel> generalWebViewFactory) : base(
+            analyticsService, dataLoaderProvider)
+        {
+            _navigator = navigator;
+            _contentContainer = contentContainer;
+            _generalWebViewFactory = generalWebViewFactory;
+            HtmlRawViewCommand = new Command(HtmlRawView);
+
+            Title = AppResources.Settings;
+            ClearCacheCommand = new Command(ClearCache);
+            ResetSettingsCommand = new Command(ResetSettings);
+            OpenDisclaimerCommand = new Command(OpenDisclaimer);
+            UpdateCacheSizeText();
+
+            _tapCount = 0;
+            OnRefresh();
+        }
         /// <summary>
         /// Gets the disclaimer text.
         /// </summary>
@@ -72,6 +97,9 @@ namespace Integreat.Shared.ViewModels.Resdesign.Settings
         /// <summary>
         /// Get the current Version
         /// </summary>
+<<<<<<< HEAD
+        public string Version => System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+=======
         public string Version
         {
             get
@@ -90,6 +118,7 @@ namespace Integreat.Shared.ViewModels.Resdesign.Settings
                 return version;
             }
         }
+>>>>>>> dev
 
         /// <summary>
         /// Gets the cache size text.
@@ -120,17 +149,23 @@ namespace Integreat.Shared.ViewModels.Resdesign.Settings
         public ICommand OpenDisclaimerCommand { get; set; }
         public ICommand OpenPushSettingsCommand { get; set; }
 
+<<<<<<< HEAD
         /// <summary>
         /// Opens the push settings page.
         /// </summary>
         private async void OpenPushSettings()
         {
             if (IsBusy || string.IsNullOrWhiteSpace(_disclaimerContent)) return;
+
             var viewModel = _firebaseFactory();
+
             //trigger load content 
             viewModel?.RefreshCommand.Execute(false);
             await _navigator.PushAsync(viewModel, Navigation);
         }
+
+=======
+>>>>>>> dev
         private async void UpdateCacheSizeText()
         {
             CacheSizeText = $"{AppResources.CacheSize} {AppResources.Calculating}";
