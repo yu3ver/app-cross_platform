@@ -1,13 +1,17 @@
 ﻿
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
+using Android.Widget;
 using Autofac;
+using Firebase;
 using Integreat.Shared;
 using Integreat.Shared.Services.Tracking;
 using Integreat.Shared.Utilities;
@@ -15,6 +19,7 @@ using localization;
 using Plugin.FirebasePushNotification;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
+using Debug = System.Diagnostics.Debug;
 
 namespace Integreat.Droid
 {
@@ -24,18 +29,46 @@ namespace Integreat.Droid
     {
         protected override void OnCreate(Bundle bundle)
         {
+            // var app = FirebaseApp.InitializeApp(Android.App.Application.Context);
+
+
             base.OnCreate(bundle);
-#if DEBUG
-            FirebasePushNotificationManager.Initialize(this, true);
-#else
-              FirebasePushNotificationManager.Initialize(this,false);
-#endif
             
             AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
             TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;
 
             Forms.Init(this, bundle);
 
+#if DEBUG
+            int logcatLines = 0;
+            Exec(new[] {"/system/bin/logcat", "-d"},
+                (o, e) =>
+                {
+                    Debug.WriteLine(e.Data);
+                    if (logcatLines == 10)
+                    {
+                        var p = (System.Diagnostics.Process) o;
+                        p.CancelErrorRead();
+                        p.CancelOutputRead();
+                        if (!p.HasExited)
+                        {
+                            try
+                            {
+                                p.Kill();
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("Unable to kill: {0}", ex.Message);
+                            }
+                        }
+                    }
+                },
+                (o, e) =>
+                {
+                    Debug.WriteLine(e.Data);
+                }
+            );
+#endif
 
             try
             {
@@ -46,7 +79,44 @@ namespace Integreat.Droid
             {
                 // suppress all errors on crash reporting
             }
+#if DEBUG
+            FirebasePushNotificationManager.Initialize(Android.App.Application.Context, true);
+#else
+              FirebasePushNotificationManager.Initialize(Android.App.Application.Context,false);
+#endif
             ContinueApplicationStartup();
+
+            FirebasePushNotificationManager.ProcessIntent(Intent);
+        }
+
+        static int Exec(string[] command, EventHandler<DataReceivedEventArgs> stdout, EventHandler<DataReceivedEventArgs> stderr)
+        {
+            var psi = new ProcessStartInfo(command[0], '"' + string.Join("\" \"", command.Skip(1)) + '"')
+            {
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+            };
+            var p = new System.Diagnostics.Process()
+            {
+                StartInfo = psi,
+                EnableRaisingEvents = true,
+            };
+            if (stdout != null)
+                p.OutputDataReceived += new DataReceivedEventHandler(stdout);
+            if (stderr != null)
+                p.ErrorDataReceived += new DataReceivedEventHandler(stderr);
+
+            using (p)
+            {
+                p.Start();
+                if (stdout != null)
+                    p.BeginOutputReadLine();
+                if (stderr != null)
+                    p.BeginErrorReadLine();
+                p.WaitForExit();
+                return p.ExitCode;
+            }
         }
 
         private void ContinueApplicationStartup()
@@ -58,8 +128,7 @@ namespace Integreat.Droid
             var cb = new ContainerBuilder();
             cb.RegisterInstance(CreateAnalytics());
             LoadApplication(new IntegreatApp(cb));
-            
-            //If debug you should reset the token each time.
+
 
         }
 
