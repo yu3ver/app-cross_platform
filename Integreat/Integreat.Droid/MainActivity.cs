@@ -12,6 +12,7 @@ using Integreat.Shared;
 using Integreat.Shared.Services.Tracking;
 using Integreat.Shared.Utilities;
 using localization;
+using Plugin.FirebasePushNotification;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 
@@ -30,6 +31,7 @@ namespace Integreat.Droid
             TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;
 
             Forms.Init(this, bundle);
+
 
             try
             {
@@ -52,6 +54,20 @@ namespace Integreat.Droid
             var cb = new ContainerBuilder();
             cb.RegisterInstance(CreateAnalytics());
             LoadApplication(new IntegreatApp(cb));
+
+            //If debug you should reset the token each time.
+#if DEBUG
+            FirebasePushNotificationManager.Initialize(this, true);
+#else
+              FirebasePushNotificationManager.Initialize(this,false);
+#endif
+
+            //Handle notification when app is closed here
+            CrossFirebasePushNotification.Current.OnNotificationReceived += (s, p) =>
+            {
+
+
+            };
         }
 
 

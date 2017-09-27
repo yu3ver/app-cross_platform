@@ -45,6 +45,7 @@ namespace Integreat.ApplicationObject
             var viewFactory = container.Resolve<IViewFactory>();
             RegisterViews(viewFactory);
 
+
             ConfigureApplication(container);
         }
 

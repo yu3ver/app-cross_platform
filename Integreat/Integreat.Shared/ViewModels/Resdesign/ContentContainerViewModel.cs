@@ -13,6 +13,8 @@ using Integreat.Shared.Utilities;
 using Integreat.Shared.ViewModels.Resdesign.Settings;
 using Xamarin.Forms;
 using Page = Xamarin.Forms.Page;
+using Plugin.FirebasePushNotification;
+using Plugin.FirebasePushNotification.Abstractions;
 using localization;
 
 namespace Integreat.Shared.ViewModels.Resdesign
@@ -52,6 +54,38 @@ namespace Integreat.Shared.ViewModels.Resdesign
             _settingsFactory = settingsFactory;
 
             _viewFactory = viewFactory;
+
+            // setup firebase
+            var firebaseInstance = CrossFirebasePushNotification.Current;
+            if (firebaseInstance != null)
+            {
+                firebaseInstance.OnTokenRefresh += (s, p) =>
+                {
+                    System.Diagnostics.Debug.WriteLine($"TOKEN : {p.Token}");
+                };
+
+                firebaseInstance.OnNotificationReceived += (s, p) =>
+                {
+
+                    System.Diagnostics.Debug.WriteLine("Received");
+
+                };
+
+                firebaseInstance.OnNotificationOpened += (s, p) =>
+                {
+                    System.Diagnostics.Debug.WriteLine("Opened");
+                    foreach (var data in p.Data)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"{data.Key} : {data.Value}");
+                    }
+
+                    if (!string.IsNullOrEmpty(p.Identifier))
+                    {
+                        System.Diagnostics.Debug.WriteLine($"ActionId: {p.Identifier}");
+                    }
+
+                };
+            }
 
             LoadLanguage();
             Current = this;

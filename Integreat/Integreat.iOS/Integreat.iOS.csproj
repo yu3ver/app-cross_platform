@@ -137,6 +137,7 @@
     <Compile Include="AppDelegate.cs" />
     <None Include="app.config" />
     <None Include="Entitlements.plist" />
+    <BundleResource Include="GoogleService-Info.plist" />
     <None Include="Info.plist" />
     <Compile Include="Effects\NoScrollListViewEffect.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
