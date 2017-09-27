@@ -25,7 +25,11 @@ namespace Integreat.Droid
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
-
+#if DEBUG
+            FirebasePushNotificationManager.Initialize(this, true);
+#else
+              FirebasePushNotificationManager.Initialize(this,false);
+#endif
 
             AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
             TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;
@@ -54,20 +58,9 @@ namespace Integreat.Droid
             var cb = new ContainerBuilder();
             cb.RegisterInstance(CreateAnalytics());
             LoadApplication(new IntegreatApp(cb));
-
+            
             //If debug you should reset the token each time.
-#if DEBUG
-            FirebasePushNotificationManager.Initialize(this, true);
-#else
-              FirebasePushNotificationManager.Initialize(this,false);
-#endif
 
-            //Handle notification when app is closed here
-            CrossFirebasePushNotification.Current.OnNotificationReceived += (s, p) =>
-            {
-
-
-            };
         }
 
 
