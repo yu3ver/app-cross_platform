@@ -30,7 +30,7 @@ namespace Integreat.Droid
 #else
               FirebasePushNotificationManager.Initialize(this,false);
 #endif
-
+            
             AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
             TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;
 
@@ -44,7 +44,7 @@ namespace Integreat.Droid
             }
             catch (Exception)
             {
-                // supress all errors on crash reporting
+                // suppress all errors on crash reporting
             }
             ContinueApplicationStartup();
         }

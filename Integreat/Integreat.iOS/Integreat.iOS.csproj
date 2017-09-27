@@ -463,6 +463,21 @@
   <ItemGroup>
     <BundleResource Include="Resources\c4r_logo.png" />
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\checkmark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\checkmark%402.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\checkmark%403.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\calendar159%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\calendar159%402x.png" />
+  </ItemGroup>
   <Import Project="..\Integreat.Shared\Integreat.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets')" />

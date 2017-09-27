@@ -47,6 +47,22 @@ namespace Integreat.Shared.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is selected. (For UI purposes)
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is selected; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                _isSelected = value; 
+                OnPropertyChanged(nameof(IsSelected));
+            }
+        }
+
         public string SearchPlaceholderText { get; set; }
 
         /// <summary>
@@ -169,6 +185,7 @@ namespace Integreat.Shared.ViewModels
         private string _whereAreYouText;
         private readonly DataLoaderProvider _dataLoaderProvider;
         private string _errorMessage;
+        private bool _isSelected;
         public ICommand ForceRefreshLocationsCommand => _forceRefreshLocationsCommand ?? (_forceRefreshLocationsCommand = new Command(() => ExecuteLoadLocations(true)));
 
         public void Search()
